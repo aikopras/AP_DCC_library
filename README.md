@@ -27,20 +27,23 @@ Note that command stations will periodically retransmit certain commands, to ens
 #include <AP_DCC_library.h>
 
 const uint8_t dccPin = 20;       // The DCC input signal is connected to Pin 20 of the ATMega2560 (INT1)
-const uint8_t ackPin = 8;        // The DCC Ackowledege signal is connected to digital Pin 8 of the ATMega2560 (PH5)
+const uint8_t ackPin = 8;        // The DCC Acknowledge signal is connected to digital Pin 8 of the ATMega2560 (PH5)
+                                 // DCC Acknowledgements are needed for Service Mode (SM) programming
 
 extern Dcc dcc;                  // This is the main library object, and instantiated in DCC_Library.cpp
-extern Accessory accCmd;
-extern Loco locoCmd;
-extern CvAccess cvCmd;
+extern Accessory accCmd;         // All results from accessory commands can be found in this object
+extern Loco locoCmd;             // All results from loco commands can be found in this object
+extern CvAccess cvCmd;           // All results from CV-Access commands (PoM and SM) can be found in this object
 
 void setup() {
-  dcc.begin(dccPin);
+  dcc.begin(dccPin, ackPin);     // ackPin is an optional parameter, and may be omitted if SM programming is not needed 
   // initialize serial communication at 115200 bits per second:
   Serial.begin(115200);
-  Serial.println("");
+  Serial.println();
   // For testing, the following variables can be changed
+  // Different Master Stations use different numbering approaches for accessory decoders
   accCmd.myMaster = Accessory::Lenz;
+  // The decoder can listen to one, or a range of addresses.
   accCmd.myDecAddrFirst = 24;    // Note: my decoder address = output (switch) address / 4
   accCmd.myDecAddrLast  = 24;    // Decoder 24 is switch 97..100
   //
