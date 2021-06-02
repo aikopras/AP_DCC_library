@@ -23,13 +23,16 @@ Note that command stations will periodically retransmit certain commands, to ens
 
 
 ```
-#include "Arduino.h"
-#include "AP_DCC_library.h"
+#include <Arduino.h>
+#include <AP_DCC_library.h>
 
-const uint8_t dccPin = 20;       // Pin 20 on the ATMega2560 - Liftdecoder is INT1
+const uint8_t dccPin = 20;       // The DCC input signal is connected to Pin 20 of the ATMega2560 (INT1)
+const uint8_t ackPin = 8;        // The DCC Ackowledege signal is connected to digital Pin 8 of the ATMega2560 (PH5)
 
-extern Dcc dcc;                       // This object is instantiated in DCC_Library.cpp
+extern Dcc dcc;                  // This is the main library object, and instantiated in DCC_Library.cpp
 extern Accessory accCmd;
+extern Loco locoCmd;
+extern CvAccess cvCmd;
 
 void setup() {
   dcc.begin(dccPin);
