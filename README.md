@@ -17,8 +17,9 @@ The main sketch should declare the following objects:
 - extern CvAccess cvCmd;
 
 Setup() should call dcc.begin(dccPin, ackPin).
-The main loop() should call dcc.input() as often as possible. If there is input,  dcc.cmdType tells what kind of command was received (such as MyAccessoryCmd or MyLocoF0F4Cmd).
-Note that command stations will periodically retransmit certain commands, to ensure that, even in noisy environments, commands will be received. Such retransmissions will be filtered within this library. The main sketch will not receive retransmissions.
+
+The main loop() should call dcc.input() as often as possible. If there is input, dcc.cmdType tells what kind of command was received (such as MyAccessoryCmd or MyLocoF0F4Cmd).
+Note that command stations will periodically retransmit certain commands, to ensure that, even in noisy environments, commands will be received. Such retransmissions will be filtered within this library. The main sketch therefore does not receive retransmissions.
 
 
 
@@ -36,7 +37,7 @@ extern Loco locoCmd;             // All results from loco commands can be found 
 extern CvAccess cvCmd;           // All results from CV-Access commands (PoM and SM) can be found in this object
 
 void setup() {
-  dcc.begin(dccPin, ackPin);     // ackPin is an optional parameter, and may be omitted if SM programming is not needed 
+  dcc.begin(dccPin, ackPin);     // ackPin is optional, and may be omitted if SM programming is not needed 
   // initialize serial communication at 115200 bits per second:
   Serial.begin(115200);
   Serial.println();
@@ -82,12 +83,10 @@ void loop() {
 }
 ```
 
-## hardware ##
+## Hardware ##
 - Timer 2 is used
-- a free to chose interrupt pin (dccpin) for the DCC input signal
-- a free to chose digital output pin for the DCC-ACK signal
-
-
+- A free to chose interrupt pin (dccpin) for the DCC input signal
+- A free to chose digital output pin for the DCC-ACK signal. Only needed if SM programming is required.
 
 ## The DCC Class class ##
 This is the main class to receive and analyse DCC messages. It has three methods: begin(), end() and input(). 
