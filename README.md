@@ -22,7 +22,7 @@ Note that command stations will periodically retransmit certain commands, to ens
 
 
 
-
+```
 #include "Arduino.h"
 #include "AP_DCC_library.h"
 
@@ -74,6 +74,7 @@ void loop() {
     }
   }
 }
+```
 
 ## hardware ##
 - Timer 2 is used
