@@ -53,13 +53,16 @@ void LocoMessage::reset_speed(void) {
   locoCmd.F21F28 = 0;
 }
 
-
 bool LocoMessage::IsMyAddress() {
   // The broadcast address for multi function (loco) decoders is 0
   // This adres is already handled by Dcc::analyze_broadcast_message, and therefore doesn't have
   // to be considered here.
-  const unsigned int broadcast_address = 0;
-  return ((locoCmd.address >= locoCmd.myLocoAddressFirst) && (locoCmd.address <= locoCmd.myLocoAddressLast));
+  // We first check if myLocoAddressLast has been initialised.
+  // If it has not been initialised, we check if the received address matches myLocoAddressFirst.
+  // If it has been initialised, we check if the received address is in the range between
+  // myLocoAddressFirst and myLocoAddressAddress.
+  if (locoCmd.myLocoAddressLast  == 65535) return (locoCmd.address == locoCmd.myLocoAddressFirst)
+  else return ((locoCmd.address >= locoCmd.myLocoAddressFirst) && (locoCmd.address <= locoCmd.myLocoAddressLast));
 }
 
 
