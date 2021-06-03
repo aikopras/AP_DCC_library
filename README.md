@@ -3,7 +3,8 @@
 This Arduino library decodes (NMRA) Digital Command Control (DCC) messages. It is primarily intended for Accesoory Decoders.
 
 ## History ##
-This software is a further development of OpenDecoder 2, as developed by W. Kufer. It has been rewritten, such that it can be used for Arduino (Atmel AVR) environments. From a functional point of view, this code is comparable to (a subset of) the NMRA-DCC library. It has been tested on several Arduino boards, as well as on other boards with ATMega16 and 2560 processors. 
+This software is a further development of OpenDecoder 2, as developed by W. Kufer. It has been rewritten, such that it can be used for Arduino (Atmel AVR) environments. From a functional point of view, this code is comparable to (a subset of) the NMRA-DCC library. It has been tested on several Arduino boards, as well as on other boards with ATMega16 and 2560 processors.
+
 Like the original OpenDecoder 2 Software and version 1.2 of the NMRA-DCC library, but in contrast to version 2 of the NMRA-DCC library, this code (still) uses a separate Timer (Timer2) to decode the DCC signal. A nice feature of this code is that it allows the DCC input (interrupt pin) to be freely chosen. However, to improve readability, maintainability and extendibility, this code includes many comments and may therefore be easier to adapt and modify to personal needs.
 
 ## Reference ##
@@ -178,3 +179,11 @@ Different command station manufacturers made different choices regarding the exa
 
 An Accesory Decoder may listen to multiple decoder addresses, for example if it supports more than four switches or skips uneven addresses. After startup, the Accessory object should therefore be initialised with the range of accessory addresses it will listen too. For that purpose set `myDecAddressFirst` and `myDecAddressLast`.
 
+
+## The LOCO Class ##
+In `setup()`, the Loco object should be initialised with the range of loco addresses it will listen too. For that purpose, `myLocoAddressFirst` and `myLocoAddressLast` should be set. 
+//
+// We analyse just a limited set of commands, thus no attempt is made to be complete.
+// Instead the focus is on those commands that may be useful for accesory decoders, that  listen to some
+// loco commands to facilitate PoM. In addition, some functions are included that may be usefull for
+// safety decoders as well as function decoders (for switchin lights within cars).
