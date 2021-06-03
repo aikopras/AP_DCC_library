@@ -53,6 +53,7 @@ void LocoMessage::reset_speed(void) {
   locoCmd.F21F28 = 0;
 }
 
+
 bool LocoMessage::IsMyAddress() {
   // The broadcast address for multi function (loco) decoders is 0
   // This adres is already handled by Dcc::analyze_broadcast_message, and therefore doesn't have

@@ -159,6 +159,20 @@ void Dcc::sendAck(void) {
 
 
 //******************************************************************************************************
+//                                            The Loco Class
+//******************************************************************************************************
+void Loco::SetMyAddress(unsigned int first, unsigned int last) {
+  // This method should be called in setup() of the main sketch
+  // If called with a single parameter, that parameter will be the decoder's Loco address.
+  // In that case "last" has the default value 65535 (maxint)
+  // If called with two parameters, the decoder listens to all addresses between first and last
+  locoCmd.myLocoAddressFirst = first;
+  if (last == 65535) locoCmd.myLocoAddressLast = first;
+    else locoCmd.myLocoAddressLast = last;
+}
+
+
+//******************************************************************************************************
 //                         Configuration Variable (CV) Access Commands - bit manipulation 
 //******************************************************************************************************
 uint8_t CvAccess::writeBit(uint8_t data) {

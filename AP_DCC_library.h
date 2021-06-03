@@ -202,6 +202,9 @@ class Accessory {
 class Loco {
   public:
     // Decoder specific attributes. Should be initialised in setup()
+    void SetMyAddress(unsigned int first, unsigned int last = 65535);
+
+  // TODO Zou dit niet beter in LocoMessage moeten?
     unsigned int myLocoAddressFirst;   // First loco address this decoder listens to
     unsigned int myLocoAddressLast;    // Last loco address. Usually same as first loco address
 
