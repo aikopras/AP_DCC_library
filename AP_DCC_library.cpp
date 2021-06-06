@@ -159,6 +159,20 @@ void Dcc::sendAck(void) {
 
 
 //******************************************************************************************************
+//                                      The Accessory Class
+//******************************************************************************************************
+void Accessory::SetMyAddress(unsigned int first, unsigned int last) {
+  // This method should be called in setup() of the main sketch
+  // If called with a single parameter, that parameter will be the decoder's Accessory address.
+  // In that case "last" has the default value 65535 (maxint)
+  // If called with two parameters, the decoder listens to all addresses between first and last
+  accMessage.myAccAddrFirst = first;
+  if (last == 65535) accMessage.myAccAddrLast = first;
+    else accMessage.myAccAddrLast = last;
+}
+
+
+//******************************************************************************************************
 //                                            The Loco Class
 //******************************************************************************************************
 void Loco::SetMyAddress(unsigned int first, unsigned int last) {
@@ -166,9 +180,9 @@ void Loco::SetMyAddress(unsigned int first, unsigned int last) {
   // If called with a single parameter, that parameter will be the decoder's Loco address.
   // In that case "last" has the default value 65535 (maxint)
   // If called with two parameters, the decoder listens to all addresses between first and last
-  locoCmd.myLocoAddressFirst = first;
-  if (last == 65535) locoCmd.myLocoAddressLast = first;
-    else locoCmd.myLocoAddressLast = last;
+  locoMessage.myLocoAddressFirst = first;
+  if (last == 65535) locoMessage.myLocoAddressLast = first;
+    else locoMessage.myLocoAddressLast = last;
 }
 
 

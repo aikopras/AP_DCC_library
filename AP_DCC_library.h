@@ -174,8 +174,8 @@ class Accessory {
     } Command_t;
     Command_t command;                   // What type of accessory command is received (basic / extended)
 
-    unsigned int myDecAddrFirst;         // 0..510  - First decoder address this decoder will listen too
-    unsigned int myDecAddrLast;          // 0..510  - Last decoder address this decoder will listen too
+    // Decoder specific attributes. Should be initialised in setup()
+    void SetMyAddress(unsigned int first, unsigned int last = 65535);
 
     unsigned int decoderAddress;         // 0..511  - Received decoder addres. 511 is the broadcast address
     unsigned int outputAddress;          // 1..2048 - The address of an individual switch or signal 
@@ -203,10 +203,6 @@ class Loco {
   public:
     // Decoder specific attributes. Should be initialised in setup()
     void SetMyAddress(unsigned int first, unsigned int last = 65535);
-
-  // TODO Zou dit niet beter in LocoMessage moeten?
-    unsigned int myLocoAddressFirst;   // First loco address this decoder listens to
-    unsigned int myLocoAddressLast;    // Last loco address. Usually same as first loco address
 
     // Attributes that contain information from the received loco message
     unsigned int address;              // 0..9999  - Received Loco addres

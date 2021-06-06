@@ -52,9 +52,8 @@ void setup() {
   // initialize serial communication at 115200 bits per second:
   Serial.begin(115200);
   Serial.println("");
-  // For testing, the following variables can be changed
-  locoCmd.myLocoAddressFirst = 5000;
-  locoCmd.myLocoAddressLast = 5000;
+  // Set Loco address. We may also specify an address range.
+  locoCmd.SetMyAddress(5000);
   delay(1000);
   Serial.println("Test DCC lib - Configuration Variable Access Commands");
 }

@@ -17,6 +17,11 @@ class LocoMessage {
     LocoMessage();                      // The constructor, which calls reset_speed()
     void reset_speed(void);             // Reset speed to 0, direction to forward and functions to off
     Dcc::CmdType_t analyse(void);       // The standard method to analyse Loco Commands
+  
+  
+    // Address range. Initialised by Loco::SetMyAddress(... first, ... last = 65535);
+    unsigned int myLocoAddressFirst;    // First loco address this decoder listens to
+    unsigned int myLocoAddressLast;     // Last loco address. Usually same as first loco address
 
   private:
     void DetermineSpeedAndDirection();
