@@ -1,6 +1,6 @@
 # AP_DCC_Library #
 
-This Arduino library decodes (NMRA) Digital Command Control (DCC) messages. It is primarily intended for Accesoory Decoders.
+This Arduino library decodes (NMRA) Digital Command Control (DCC) messages. It is primarily intended for accessory Decoders.
 
 ## History ##
 This software is a further development of OpenDecoder 2, as developed by W. Kufer. It has been rewritten, such that it can be used for Arduino (Atmel AVR) environments. From a functional point of view, this code is comparable to (a subset of) the NMRA-DCC library. It has been tested on several Arduino boards, as well as on other boards with ATMega16 and 2560 processors.
