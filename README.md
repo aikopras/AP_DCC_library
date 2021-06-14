@@ -19,7 +19,7 @@ extern Loco locoCmd;
 extern CvAccess cvCmd;
 ```
 
-`setup()` should call `dcc.begin(dccPin, ackPin)`.
+`setup()` should call `dcc.attach(dccPin, ackPin)`.
 
 The main loop() should call `dcc.input()` as often as possible. If there is input, `dcc.cmdType` tells what kind of command was received (such as `MyAccessoryCmd` or `MyLocoF0F4Cmd`).
 Note that command stations will periodically retransmit certain commands, to ensure that, even in noisy environments, commands will be received. Such retransmissions will be filtered by this library. The main sketch therefore does not receive retransmissions.
@@ -35,7 +35,7 @@ extern Dcc dcc;                  // Main object
 extern Accessory accCmd;         // Data from received accessory commands
 
 void setup() {
-  dcc.begin(dccPin);
+  dcc.attach(dccPin);
   // initialize serial communication at 115200 bits per second:
   Serial.begin(115200);
   Serial.println();
@@ -83,9 +83,9 @@ void loop() {
 - A free to chose digital output pin for the DCC-ACK signal. Only needed if SM programming is required.
 
 ## The DCC Class ##
-This is the main class to receive and analyse DCC messages. It has three methods: `begin()`, `end()` and `input()`.
+This is the main class to receive and analyse DCC messages. It has three methods: `attach()`, `detach()` and `input()`.
 
-#### void begin(uint8_t dccPin, uint8_t ackPin=255) ####
+#### void attach(uint8_t dccPin, uint8_t ackPin=255) ####
 Starts the timer T2 and initialises the DCC Interrupt Service Routine (ISR).
 - dccPin is the interrupt pin for the DCC signal. Basically any available AVR interrupt pin may be selected.  
 - ackPin is an optional parameter to specify the pin for the DCC Service Mode Acknowledgement signal (of 6ms). If this parameter is omitted, no DCC acknowledegements will be generated.
@@ -93,7 +93,7 @@ Starts the timer T2 and initialises the DCC Interrupt Service Routine (ISR).
 The interrupt routine that reads the value of the `dccPin` must be fast. The traditional Arduino `digitalRead()` function is relatively slow, certainly when compared to direct port reading, which can be done (for example) as follows: `DccBitVal = !(PIND & (1<<PD3);`
 However, direct port reading has as disadvantage that the port and mask should be hardcoded, and can not be set by the main sketch, thus the user of this library. Therefore we take a slightly slower approach, and use a variable called `portInputRegister`, which points to the correct input port with the right bitmask. With tis approach we actually split the Arduino `digitalRead()` function into a slow initialisation part, which maps dccPin to `portInputRegister`, and a fast reading part, which grabs data from that port.
 
-#### void end(void) ####
+#### void detach(void) ####
 Stops the timer and DCC ISR. This is needed before a decoder can be soft-reset.
 
 #### bool input(void) ####

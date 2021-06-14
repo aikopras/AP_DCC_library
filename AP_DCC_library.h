@@ -14,7 +14,7 @@
 //            - extern Accessory     accCmd;  // To retrieve the data from accessory commands
 //            - extern Loco          locoCmd; // To retrieve the data from loco commands  (7 & 14 bit)
 //            - extern CvAccess      cvCmd;   // To retrieve the data from pom and sm commands
-//            Setup() should call dcc.begin(dccPin). dccPin is the interrupt pin for the DCC signal
+//            Setup() should call dcc.dccPin). dccPin is the interrupt pin for the DCC signal
 //            The main loop() should call dcc.input() as often as possible. If there is input,
 //            dcc.cmdType tells what kind of command was received (such as MyAccessoryCmd or MyLocoF0F4Cmd).
 //
@@ -39,7 +39,7 @@
 //******************************************************************************************************
 //                                            DCC Class
 //******************************************************************************************************
-// This is the main class to receive and analyse DCC messages. It has three methods: begin(), end()
+// This is the main class to receive and analyse DCC messages. It has three methods: attach(), detach()
 // and input(). The main loop() should call dcc.input() as often as possible. If there is input,
 // dcc.cmdType informs main what kind of command was received.
 
@@ -69,9 +69,9 @@ class Dcc {
     } CmdType_t;
     CmdType_t cmdType;                           // What kind of DCC message did we receive?
 
-    void begin(uint8_t dccPin,
-               uint8_t ackPin=255);              // Start the timer and DCC ISR
-    void end(void);                              // Stops the timer and DCC ISR
+    void attach(uint8_t dccPin,
+                uint8_t ackPin=255);             // Start the timer and DCC ISR
+    void detach(void);                           // Stops the timer and DCC ISR
     bool input(void);                            // Analyze the DCC message received. Returns true, if new message
     void sendAck();                              // Create a 6ms DCC ACK signal (needed for Service Mode)
 
@@ -80,7 +80,7 @@ class Dcc {
 
   private:
     CmdType_t analyze_broadcast_message(void);
-    uint8_t _ackPin;                            // Set by begin(), and used by sendAck()
+    uint8_t _ackPin;                            // Set by attach(), and used by sendAck()
 };
 
 //******************************************************************************************************

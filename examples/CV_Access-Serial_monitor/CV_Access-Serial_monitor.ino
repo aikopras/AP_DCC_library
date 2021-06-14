@@ -12,9 +12,9 @@
 //            - extern Loco          locoCmd;  // To set the Loco address (for PoM)
 //            - extern CvAccess      cvCmd;    // To retrieve the data from pom and sm commands
 //
-//            Setup() should call dcc.begin(dccPin, ackPin).
-//            - dccPin is the interrupt pin for the DCC signal,  
-//            - ackPin is an optional parameter to specify the pin for the DCC Acknowledgement signal 
+//            Setup() should call dcc.attach(dccPin, ackPin).
+//            - dccPin is the interrupt pin for the DCC signal,
+//            - ackPin is an optional parameter to specify the pin for the DCC Acknowledgement signal
 //            The main loop() should call dcc.input() as often as possible. If there is input,
 //            dcc.cmdType tells what kind of command was received.
 //
@@ -48,7 +48,7 @@ const uint8_t PoM = 2;
 
 
 void setup() {
-  dcc.begin(dccPin, ackPin);
+  dcc.attach(dccPin, ackPin);
   // initialize serial communication at 115200 bits per second:
   Serial.begin(115200);
   Serial.println("");
@@ -58,7 +58,7 @@ void setup() {
   Serial.println("Test DCC lib - Configuration Variable Access Commands");
 }
 
-  
+
 void cv_operation(const uint8_t op_mode) {
   // SM:  op_mode = 1
   // PoM: op_mode = 2
@@ -69,25 +69,25 @@ void cv_operation(const uint8_t op_mode) {
   Serial.println(cvCmd.value);
   // Ensure we stay within the CV array bounds
   if (index < sizeof(myCvs)) {
-    Serial.print("Old CV value = "); 
+    Serial.print("Old CV value = ");
     Serial.println(myCvs[index]);
     switch(cvCmd.operation) {
-      
+
       case CvAccess::verifyByte :
         if (myCvs[index] == cvCmd.value) {
           Serial.println("Verify Byte Command - Bytes are equal");
-          // In SM we send back a DCC-ACK signal, in PoM mode a railcom reply (not implemented) 
+          // In SM we send back a DCC-ACK signal, in PoM mode a railcom reply (not implemented)
           if (op_mode == SM)  {dcc.sendAck();}
         }
         else Serial.println("Verify Byte Command - Bytes are unequal");
       break;
-        
+
       case CvAccess::writeByte :
         Serial.println("Write Byte Command");
         myCvs[index] = cvCmd.value;
         if (op_mode == SM) dcc.sendAck();
       break;
-        
+
       case CvAccess::bitManipulation :
         Serial.print("Bit Manupulation");
         Serial.print(", Bitposition = ");  Serial.print(cvCmd.bitposition);
@@ -97,7 +97,7 @@ void cv_operation(const uint8_t op_mode) {
           myCvs[index] = cvCmd.writeBit(myCvs[index]);
           Serial.print(". New CV value = "); Serial.println(myCvs[index]);
           if (op_mode == SM) dcc.sendAck();
-        } 
+        }
         else { // verify bit
           Serial.print("Verify Command");
           if (cvCmd.verifyBit(myCvs[index])) {
@@ -135,5 +135,5 @@ void loop() {
       break;
 
     }
-  } 
+  }
 }

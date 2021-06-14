@@ -12,14 +12,14 @@
 //            This Library has also been tested on ATMega16 and 2560 processors.
 //            Like the OpenDecoder 2 Software and version 1.2 of the NMRA-DCC library, this code
 //            uses a separate Timer (Timer2) to decode the DCC signal. However, as opposed to some
-//            other code bases, the DCC input (interrupt pin) can be freely chosen. In contrast to 
+//            other code bases, the DCC input (interrupt pin) can be freely chosen. In contrast to
 //            to the NMRA-DCC version 2 library, this code doesn't use callback functions, in an
-//            attempt to improve the readability of the main loop for cases where the action to be 
+//            attempt to improve the readability of the main loop for cases where the action to be
 //            taken should not depend on the trigger source. For example, the code for setting a switch
 //            should be the same, irrespective whether the trigger is a DCC-message or a button push.
 //            To improve readability, mainainability and extendibility, many comments were included
 //            and an attempt is made to structure the code more clearly.
-// reference: This code follows the NMRA DCC standard S9.2 S9.2.1 and S9.2.3 as well as RCN211-RCN214  
+// reference: This code follows the NMRA DCC standard S9.2 S9.2.1 and S9.2.3 as well as RCN211-RCN214
 //            (in German, by railcommunity.org), which include more detailed descriptions as well as
 //            the differences in accesory decoder addresses.
 //
@@ -53,17 +53,17 @@ CvMessage     cvMessage;        // Interface to sup_cv
 
 //******************************************************************************************************
 //                    The methods that belong to the Dcc object are implemented here
-//         Note that the Accesory and Loco objects do not include methods, but only attributes 
+//         Note that the Accesory and Loco objects do not include methods, but only attributes
 //******************************************************************************************************
-void Dcc::begin(uint8_t dccPin, uint8_t ackPin) {
+void Dcc::attach(uint8_t dccPin, uint8_t ackPin) {
   errorXOR = 0;
-  dccMessage.begin(dccPin, ackPin);
+  dccMessage.attach(dccPin, ackPin);
   _ackPin = ackPin;
 }
 
 
-void Dcc::end(void) {
-  dccMessage.end();
+void Dcc::detach(void) {
+  dccMessage.detach();
 }
 
 
@@ -137,7 +137,7 @@ bool Dcc::input(void) {
     dccMessage.isReady = 0;
     interrupts();
     packet_received = true;
-  }   
+  }
   return packet_received;
 }
 
@@ -187,7 +187,7 @@ void Loco::SetMyAddress(unsigned int first, unsigned int last) {
 
 
 //******************************************************************************************************
-//                         Configuration Variable (CV) Access Commands - bit manipulation 
+//                         Configuration Variable (CV) Access Commands - bit manipulation
 //******************************************************************************************************
 uint8_t CvAccess::writeBit(uint8_t data) {
   if (bitvalue == 1) return(bitSet(data, bitposition));
@@ -199,4 +199,3 @@ bool CvAccess::verifyBit(uint8_t data) {
   if (bitRead(data, bitposition) == bitvalue) return true;
   return false;
 }
-    
