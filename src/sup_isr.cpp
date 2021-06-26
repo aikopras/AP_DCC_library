@@ -130,6 +130,7 @@ void init_timer2(void) {
   // DCC Interrupts, only the first interrupt matters.
   noInterrupts();              // disable all interrupts
   // Stop the timer and preload its value for the next cycle
+  // TODO SHOULD THIS BE #if defined OR #ifdef
   #if defined(TCCR2)           // ATMEGA 8535, 16, 32, 64, 162 etc
   TCCR2 = 0;                   // 0 => timer is stopped
   TCNT2 = 256L - T77US;        // preload the timer
