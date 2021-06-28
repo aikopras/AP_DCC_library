@@ -40,7 +40,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println("");
   // For testing, the following variables can be changed
-  accCmd.myMaster = Accessory::Lenz;
+  accCmd.myMaster = Lenz;
   // Set Accessory address. We may also specify an address range.
   // Note: my decoder address = output (switch) address / 4
   accCmd.SetMyAddress(24);    // Decoder 24 is switch 97..100

@@ -169,7 +169,7 @@ Since all attributes will get the correct values, the choice which attributes to
 #### ADDRESSING DETAILS ####
 The broadcast outputAddress is 2047.
 
-Different command station manufacturers made different choices regarding the exact coding of the address bits within the DCC packet. See "support_accesory.cpp" for details. In many cases these differences can be neglected, unless the decoder address will also be used for other purposes, such as calculating CV values, or generating feedback / POM addresses. The `myMaster` attribute can be set by the main sketch to `Lenz`, `OpenDcc` or `Roco` to deal with different command station behavior. The default value is `Lenz`.
+Different command station manufacturers made different choices regarding the exact coding of the address bits within the DCC packet. See "support_accesory.cpp" for details. In many cases these differences can be neglected, unless the decoder address will also be used for other purposes, such as calculating CV values, or generating feedback / POM addresses. The `myMaster` attribute can be set by the main sketch to  `Lenz`, `OpenDcc` or `Roco` to deal with different command station behavior. The default value is `Lenz`.
 
 An Accessory Decoder may listen to one or multiple decoder addresses, for example if it supports more than four switches or skips uneven addresses. After startup, a call should be made to `SetMyAddress()`. If the call includes a single parameter, that parameter represents the (single) address this decoder listens to. If the call includes two parameters, these parameters represent the range of addresses this decoder listens to.
 

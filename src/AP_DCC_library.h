@@ -145,11 +145,11 @@ class Dcc {
 // The broadcast outputAddress is 2047.
 //
 // Different command station manufacturers made different choices regarding the exact coding
-// of the address bits within the DCC packet. See "support_accesory.cpp" for details.
+// of the address bits within the DCC packet. See "sup_acc.cpp" for details.
 // In many cases these differences can be neglected, unless the decoder address will also be
 // used for other purposes, such as calculating CV values, or generating feedback / POM addresses.
-// The "myMaster" attribute can be set by the main sketch to "Lenz", "OpenDcc" or "Roco" to deal
-// with different command station behavior. The default value is "Lenz".
+// The "myMaster" attribute can be set by the main sketch to "Lenz", "OpenDcc" or "Roco"
+// to deal with different command station behavior. The default value is "Lenz".
 //
 // An Accesory Decoder may listen to one or multiple decoder addresses, for example if it supports more than
 // four switches or skips uneven addresses. After startup, a call should be made to SetMyAddress().
@@ -158,15 +158,17 @@ class Dcc {
 // this decoder will listen to.
 //
 //******************************************************************************************************
+const uint8_t Roco = 0;     // Roco 10764 with Multimouse
+const uint8_t Lenz = 1;     // LENZ LZV100 with Xpressnet V3.6 - Default value
+const uint8_t OpenDCC = 2;  // OpenDCC Z1 with Xpressnet V3.6
+
+
 class Accessory {
   public:
-    // myMaster can be set by the main sketch. If omitted, the default value is "Lenz"
-    typedef enum {                       // What command station is used to send accessory commands?
-      Lenz,                              // LENZ LZV100 with Xpressnet V3.6 - Default value
-      OpenDCC,                           // OpenDCC Z1 with Xpressnet V3.6
-      Roco                               // Roco 10764 with Multimouse
-    } System_t;
-    System_t myMaster;
+  
+    // Decoder specific attributes should be initialised in setup()
+    void SetMyAddress(unsigned int first, unsigned int last = 65535);
+    uint8_t myMaster = Lenz;
 
     // The next attributes inform the main sketch about the contents of the received accessory command
     typedef enum {
@@ -174,9 +176,6 @@ class Accessory {
       extended
     } Command_t;
     Command_t command;                   // What type of accessory command is received (basic / extended)
-
-    // Decoder specific attributes. Should be initialised in setup()
-    void SetMyAddress(unsigned int first, unsigned int last = 65535);
 
     unsigned int decoderAddress;         // 0..511  - Received decoder addres. 511 is the broadcast address
     unsigned int outputAddress;          // 1..2048 - The address of an individual switch or signal

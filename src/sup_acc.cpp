@@ -187,11 +187,11 @@ Dcc::CmdType_t AccMessage::analyse(void) {
   uint8_t  lsb =  (dccMessage.data[0] & 0b00111111);
   // Step 1B: Correct the received address to deal with differences in command stations (see above)
   switch (accCmd.myMaster) {
-    case Accessory::Lenz:
+    case Lenz:
       if (lsb == 0) {msb = msb + 64;}
       accCmd.decoderAddress = msb + lsb - 1;
       break;
-    case Accessory::Roco:
+    case Roco:
       accCmd.decoderAddress = msb + lsb;
       break;
     default:
