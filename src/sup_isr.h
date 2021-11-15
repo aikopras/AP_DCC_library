@@ -8,7 +8,7 @@
 // history:   This is a further development of the OpenDecoder 2 software, as developed by W. Kufer.
 //            It implements the DCC receiver code, in particular the layer 1 (bit detection) and
 //            layer 2 (packet construction) part. The code has been adapted for Arduino by A. Pras.
-//            Note that this code his simularities with version 1 of the NmraDcc V1.2.1 library. 
+//            Note that this code his simularities with version 1 of the NmraDcc V1.2.1 library.
 //            An important difference is that readability of this code should be clearer.
 //
 // Used hardware resources:
@@ -16,7 +16,7 @@
 //  - Timer2: To read the DCC input signal after 77us to determine if we receive a DCC 0 or 1
 //
 // The Arduino and the (standard) mightycore boards support the following Interrupts and pins:
-//  Interrupt   Port   Pin   Where 
+//  Interrupt   Port   Pin   Where
 //    INT0      PD2      2   All standard Arduino boards
 //    INT1      PD3      3   All standard Arduino boards
 //    INT0      PD0     21   MEGA
@@ -40,10 +40,10 @@ class DccMessage {
     volatile uint8_t isReady;                     // Flag that DCC message has been received and can be decoded
 
     volatile uint8_t data[MaxDccSize];            // The contents of the last dcc message received
-    volatile uint8_t size;                        // 3 .. 6, including XOR     
+    volatile uint8_t size;                        // 3 .. 6, including XOR
 
-    void begin(uint8_t dccPin, uint8_t ackPin);   // Initialises the timer and DCC input Interrupt Service Routines
-    void end(void);                               // Stops the timer and DCC input ISRs, for example before a restart
+    void attach(uint8_t dccPin, uint8_t ackPin);  // Initialises the timer and DCC input Interrupt Service Routines
+    void detach(void);                            // Stops the timer and DCC input ISRs, for example before a restart
 
   private:
     uint8_t _dccPin;                              // Here we store a local copy of the DCC input pin
@@ -51,14 +51,14 @@ class DccMessage {
 
 
 
-// For certain types of decoders (such as occupancy detectors) the voltage over certain resistors 
+// For certain types of decoders (such as occupancy detectors) the voltage over certain resistors
 // must be measured to determine if a track is occupied or not. There will only be a non-zero
-// voltage over these resistors if the DCC signal is high. Therefore the AD conversion must start 
+// voltage over these resistors if the DCC signal is high. Therefore the AD conversion must start
 // at such moment. The ISR routines can determine when such moments are there, thus the start of
 // AD conversions is started from here. Note that "VOLTAGE_DETECTION" must be defined to activate
 // the related code.
 #if defined(VOLTAGE_DETECTION)
 class AdcStart {
-  public: volatile uint8_t newRequest;   // Flag to signal new ADC conversion should start 
+  public: volatile uint8_t newRequest;   // Flag to signal new ADC conversion should start
 };
 #endif

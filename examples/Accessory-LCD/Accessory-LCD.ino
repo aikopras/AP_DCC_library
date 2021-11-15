@@ -11,7 +11,7 @@
 //            - extern Dcc           dcc;     // The main DCC object
 //            - extern Accessory     accCmd;  // To retrieve the data from accessory commands
 //
-//            Setup() should call dcc.begin(dccPin). dccPin is the interrupt pin for the DCC signal
+//            Setup() should call dcc.attach(dccPin). dccPin is the interrupt pin for the DCC signal
 //            The main loop() should call dcc.input() as often as possible. If there is input,
 //            dcc.cmdType tells what kind of command was received.
 //            In this sketch we react on MyAccessoryCmd and AnyAccessoryCmd).
@@ -40,13 +40,13 @@ extern Dcc dcc;                  // This object is instantiated in DCC_Library.c
 extern Accessory accCmd;         // This object is instantiated in DCC_Library.cpp
 
 void setup() {
-  dcc.begin(dccPin);
+  dcc.attach(dccPin);
   lcd.begin(16,2);
   lcd.print("Test DCC lib");
-  // For testing, the following variables can be changed 
-  accCmd.myMaster = Accessory::Lenz;
+  // For testing, the following variables can be changed
+  accCmd.myMaster = Lenz;
   // Set Accessory address. We may also specify an address range.
-  // Note: my decoder address = output (switch) address / 4  
+  // Note: my decoder address = output (switch) address / 4
   accCmd.SetMyAddress(24);    // Decoder 24 is switch 97..100
   delay(1000);
 }

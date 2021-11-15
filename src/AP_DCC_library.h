@@ -14,8 +14,8 @@
 //            - extern Accessory     accCmd;  // To retrieve the data from accessory commands
 //            - extern Loco          locoCmd; // To retrieve the data from loco commands  (7 & 14 bit)
 //            - extern CvAccess      cvCmd;   // To retrieve the data from pom and sm commands
-//            Setup() should call dcc.begin(dccPin). dccPin is the interrupt pin for the DCC signal
-//            The main loop() should call dcc.input() as often as possible. If there is input, 
+//            Setup() should call dcc.dccPin). dccPin is the interrupt pin for the DCC signal
+//            The main loop() should call dcc.input() as often as possible. If there is input,
 //            dcc.cmdType tells what kind of command was received (such as MyAccessoryCmd or MyLocoF0F4Cmd).
 //
 //            Note that command stations will periodically retransmit certain commands, to ensure
@@ -39,7 +39,7 @@
 //******************************************************************************************************
 //                                            DCC Class
 //******************************************************************************************************
-// This is the main class to receive and analyse DCC messages. It has three methods: begin(), end()
+// This is the main class to receive and analyse DCC messages. It has three methods: attach(), detach()
 // and input(). The main loop() should call dcc.input() as often as possible. If there is input,
 // dcc.cmdType informs main what kind of command was received.
 
@@ -69,18 +69,18 @@ class Dcc {
     } CmdType_t;
     CmdType_t cmdType;                           // What kind of DCC message did we receive?
 
-    void begin(uint8_t dccPin,
-               uint8_t ackPin=255);              // Start the timer and DCC ISR 
-    void end(void);                              // Stops the timer and DCC ISR  
+    void attach(uint8_t dccPin,
+                uint8_t ackPin=255);             // Start the timer and DCC ISR
+    void detach(void);                           // Stops the timer and DCC ISR
     bool input(void);                            // Analyze the DCC message received. Returns true, if new message
     void sendAck();                              // Create a 6ms DCC ACK signal (needed for Service Mode)
 
-  
+
     uint8_t errorXOR;                            // The number of DCC packets with an incorrect checksum
-  
+
   private:
     CmdType_t analyze_broadcast_message(void);
-    uint8_t _ackPin;                            // Set by begin(), and used by sendAck()
+    uint8_t _ackPin;                            // Set by attach(), and used by sendAck()
 };
 
 //******************************************************************************************************
@@ -91,13 +91,13 @@ class Dcc {
 // 2) Extended accessory command, used for signals, turntables and other, more complex devices
 // *** command (basic..extended) ***
 // The "command" attribute indicates whether a basic or an extended accessory command was received.
-// All command stations can generate basic accessory commands, but only a few support extended accesory 
+// All command stations can generate basic accessory commands, but only a few support extended accesory
 // commands. The LENZ LZV101 (with Xpressnet V3.6) for example can't, but the OpenDCC command station
 // can generate extended accesory commands.
 //
-// Commands for accessory decoders contain fields that can be interpreted in different ways, depending 
+// Commands for accessory decoders contain fields that can be interpreted in different ways, depending
 // on the specific decoder that is being implemented.
-// 
+//
 // OPTION 1: Decoder based addressing (basic):
 // The most common type of accessory decoder is the switch decoder, which connects upto 4 switches.
 // Such decoders understand basic accesory commands, and their fields can be interpreted as follows:
@@ -106,32 +106,32 @@ class Dcc {
 // some command stations (like the LENZ LZV101 with XpressNet V3.6)  support only 8 bits (0..255).
 // *** turnout (1..4) ***
 // The "turnout" attribute tells which of the four switches is being targetted.
-// 
+//
 // OPTION 2: Output based addressing (basic and extended)
 // *** outputAddress (1..2048) ***
-// Instead of addressing decoders (that connect multiple switches), it is also possible to directly 
+// Instead of addressing decoders (that connect multiple switches), it is also possible to directly
 // address individual switches or other outputs (relays, signals, turntables etc). Output addresses
-// are 11 bits in length, and consists basically of the concatenation of the "decoderAddress" and 
+// are 11 bits in length, and consists basically of the concatenation of the "decoderAddress" and
 // the "switch" attributes.
 //
 // *** position (0..1) *** (basic)
-// Most switches can be positioned via two coils or servos. The "position" attribute tells which of 
-// the two coils is being targetted. Unfortunately different command stations made different choices 
-// regarding the interpretation of 0 or 1. According to RCN-213, a value 0 is used for "diverging" 
+// Most switches can be positioned via two coils or servos. The "position" attribute tells which of
+// the two coils is being targetted. Unfortunately different command stations made different choices
+// regarding the interpretation of 0 or 1. According to RCN-213, a value 0 is used for "diverging"
 // tracks (red), whereas the value 1 is used for "straight" tracks (green). Some command stations
-// use '-' for 0, or '+' for 1 to indicate the position. 
+// use '-' for 0, or '+' for 1 to indicate the position.
 //
 // *** device (1..8) *** (basic)
 // In case of relays or other on/off devices usage of the "turnout" and "position" attributes may seem
-// artificial. In such cases the "device" attribute may be used instead. 
-// 
+// artificial. In such cases the "device" attribute may be used instead.
+//
 // *** activate (0..1) *** (basic)
-// Whether the output should be actived (on) or deactivated (off). 
+// Whether the output should be actived (on) or deactivated (off).
 //
 // *** signalHead (0..255) *** (extended)
 // The value contained in the extended accessory command. The NMRA S-9.2.1 standard allocates 5 bits,
 // allowing values between 0 and 31, whereas the RCN-213 standard allocates 8 bits, thus 0..255
-// Can be used to display different signal heads, but might also be used for turntables or other, 
+// Can be used to display different signal heads, but might also be used for turntables or other,
 // more complex devices.
 //
 // RELATION BETWEEN ATTRIBUTES
@@ -145,43 +145,43 @@ class Dcc {
 // The broadcast outputAddress is 2047.
 //
 // Different command station manufacturers made different choices regarding the exact coding
-// of the address bits within the DCC packet. See "support_accesory.cpp" for details. 
-// In many cases these differences can be neglected, unless the decoder address will also be 
+// of the address bits within the DCC packet. See "sup_acc.cpp" for details.
+// In many cases these differences can be neglected, unless the decoder address will also be
 // used for other purposes, such as calculating CV values, or generating feedback / POM addresses.
-// The "myMaster" attribute can be set by the main sketch to "Lenz", "OpenDcc" or "Roco" to deal 
-// with different command station behavior. The default value is "Lenz".
+// The "myMaster" attribute can be set by the main sketch to "Lenz", "OpenDcc" or "Roco"
+// to deal with different command station behavior. The default value is "Lenz".
 //
-// An Accesory Decoder may listen to multiple decoder addresses, for example if it supports more than
-// four switches or skips uneven addresses. After startup, the Accessory object should therefore be
-// initialised with the range of accessory addresses it will listen too.
-// For that purpose set myDecAddressFirst and myDecAddressLast.
+// An Accesory Decoder may listen to one or multiple decoder addresses, for example if it supports more than
+// four switches or skips uneven addresses. After startup, a call should be made to SetMyAddress().
+// If the call includes a single parameter, that parameter represents the (single) address this decoder
+// will listen to. If the call includes two parameters, these parameters represent the range of addresses
+// this decoder will listen to.
 //
 //******************************************************************************************************
+const uint8_t Roco = 0;     // Roco 10764 with Multimouse
+const uint8_t Lenz = 1;     // LENZ LZV100 with Xpressnet V3.6 - Default value
+const uint8_t OpenDCC = 2;  // OpenDCC Z1 with Xpressnet V3.6
+
+
 class Accessory {
   public:
-    // myMaster can be set by the main sketch. If omitted, the default value is "Lenz"
-    typedef enum {                       // What command station is used to send accessory commands?
-      Lenz,                              // LENZ LZV100 with Xpressnet V3.6 - Default value
-      OpenDCC,                           // OpenDCC Z1 with Xpressnet V3.6
-      Roco                               // Roco 10764 with Multimouse
-    } System_t;
-    System_t myMaster;  
+  
+    // Decoder specific attributes should be initialised in setup()
+    void SetMyAddress(unsigned int first, unsigned int last = 65535);
+    uint8_t myMaster = Lenz;
 
-    // The next attributes inform the main sketch about the contents of the received accessory command 
+    // The next attributes inform the main sketch about the contents of the received accessory command
     typedef enum {
       basic,
       extended
     } Command_t;
     Command_t command;                   // What type of accessory command is received (basic / extended)
 
-    // Decoder specific attributes. Should be initialised in setup()
-    void SetMyAddress(unsigned int first, unsigned int last = 65535);
-
     unsigned int decoderAddress;         // 0..511  - Received decoder addres. 511 is the broadcast address
-    unsigned int outputAddress;          // 1..2048 - The address of an individual switch or signal 
-    uint8_t device;                      // 1..8    - For on/off devices, such as relays    
-    uint8_t turnout;                     // 1..4    - For switches, which have two states (coils / servo's) 
-    uint8_t position;                    // 0..1    - The turnout position (straight-curved, green-red, -/+)  
+    unsigned int outputAddress;          // 1..2048 - The address of an individual switch or signal
+    uint8_t device;                      // 1..8    - For on/off devices, such as relays
+    uint8_t turnout;                     // 1..4    - For switches, which have two states (coils / servo's)
+    uint8_t position;                    // 0..1    - The turnout position (straight-curved, green-red, -/+)
     uint8_t activate;                    // 0..1    - If the relay or coil should be activated or deactivated
     uint8_t signalHead;                  // 0..255  - In case of an extended accessory command, the signal's value
 };
@@ -191,12 +191,15 @@ class Accessory {
 //                                               LOCO COMMANDS
 //******************************************************************************************************
 // After startup, the Loco object should be initialised with the range of loco addresses it will listen
-// too. For that purpose set myLocoAddressFirst and myLocoAddressLast
+// too. For that purpose a call should be made to SetMyAddress(). If the call includes a single
+// parameter, that parameter represents the (single) loco address this decoder will listen to.
+// If the call includes two parameters, these parameters represent the range of loco addresses this
+// decoder will listen to.
 //
-// We analyse just a limited set of commands, thus no attempt is made to be complete.
-// Instead the focus is on those commands that may be useful for accesory decoders, that  listen to some
+// We analyse most commands, but no attempt is made to be complete.
+// The focus is on those commands that may be useful for accesory decoders, that  listen to some
 // loco commands to facilitate PoM. In addition, some functions are included that may be usefull for
-// safety decoders as well as function decoders (for switchin lights within cars).
+// safety decoders as well as function decoders (for switchin lights within couches).
 //
 //******************************************************************************************************
 class Loco {
@@ -228,7 +231,7 @@ class Loco {
 //                           CV-ACCESS (SM AND POM) FOR LOCO AND ACCESSORY DECODER
 //******************************************************************************************************
 // The behavior of the decoder is determined by the setting of certain Configuration Variables (CVs)
-// Commands to access these variables can be send in Service Mode (SM = Programming Track) or in 
+// Commands to access these variables can be send in Service Mode (SM = Programming Track) or in
 // Programming on the Main (PoM) mode. This decoder supports both modes.
 //
 // According to S-9.2.1, PoM supports 2 methods to access Configuration Variables (CVs): Short form
@@ -238,15 +241,15 @@ class Loco {
 // Direct Configuration, Address-Only, Physical Register, and Paged Addressing.
 // Of these, only Direct Configuration is implemented by this Library
 //
-// There are several conditions to be satisfied before CV access commands can be accepted. 
+// There are several conditions to be satisfied before CV access commands can be accepted.
 // In SM, a reset packet must be received before a CV access command may be accepted, and timeouts
 // must be obeyed. Only the second command may be acted upon. This library ensures that all these
-// conditions are met. 
+// conditions are met.
 //
 // To determine the value of a specific CV, a Command Station usualy sends 8 consecutive verify bit
 // commands, one to check each individual bit of the 8-bit variable. After that, the Command Station
 // may issue a verify byte command, to ensure no errors occured.
-// 
+//
 //******************************************************************************************************
 class CvAccess {
   public:
@@ -257,8 +260,8 @@ class CvAccess {
       writeByte                          // CC = 11
     } operation_t;
     operation_t operation;
-  
-    unsigned int number;                 // 1..1024 - CV number 
+
+    unsigned int number;                 // 1..1024 - CV number
     uint8_t value;                       // 0..255  - CV value
 
     // bitManipulation
@@ -266,7 +269,7 @@ class CvAccess {
     uint8_t bitvalue;                    // 0..1
     uint8_t bitposition;                 // 0..7
 
-    uint8_t writeBit(uint8_t data);      // write bitvalue on bitposition 
+    uint8_t writeBit(uint8_t data);      // write bitvalue on bitposition
     bool verifyBit(uint8_t data);        // the received bitvalue on bitposition matches the old
 
 };

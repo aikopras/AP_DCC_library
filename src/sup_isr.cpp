@@ -41,7 +41,7 @@
 // It is instantiated in, and used by, DCC_Library.cpp
 extern DccMessage dccMessage;
 
-// For certain types of decoders (such as occupancy detectors) the ADC hardware will be initiated 
+// For certain types of decoders (such as occupancy detectors) the ADC hardware will be initiated
 // To activate that code "VOLTAGE_DETECTION" must be defined within "AP_DCC_library.h"
 #if defined(VOLTAGE_DETECTION)
 #warning "HALLO"
@@ -65,7 +65,7 @@ struct {
   state_t state;                              // Determines if we now receive the preamble, data etc.
   uint8_t bitCount;                           // Count number of preamble bits / if we have a byte
   uint8_t tempByte;                           // Bits received from the DCC input pin are stored here
-  volatile uint8_t tempMessage[MaxDccSize];   // Once we have a byte, we store it in the temp message 
+  volatile uint8_t tempMessage[MaxDccSize];   // Once we have a byte, we store it in the temp message
   volatile uint8_t tempMessageSize;           // Here we keep track of the size, including XOR
 } dccrec;                                     // The received DCC message is assembled here
 
@@ -80,10 +80,10 @@ struct {
 // 3. Initialisation of the timer2 interrupt routine
 //******************************************************************************************************
 void init_timer2(void) {
-  // Timer 2 (TCNT2) will be used in overflow mode. 
+  // Timer 2 (TCNT2) will be used in overflow mode.
   // If the TCNT2 overflows, the corresponding ISR(TIMER2_OVF_vect) will be called.
   // A prescaler is used to divide the clockspeed into a lower speed.
-  // At init (but again after the timer overflow in the ISR) TCNT2 is preloaded with a start value 
+  // At init (but again after the timer overflow in the ISR) TCNT2 is preloaded with a start value
   // The timer is started within the DCC-IN ISR, and stopped in the Timer2 Overflow ISR
   //
   // The following Timer2 related registers exist:
@@ -93,10 +93,10 @@ void init_timer2(void) {
   // - TIMSK2:   Timer Interrupt Mask Register - Bit 0 (TOIE2) determines we use the counter in Overflow mode
   //             TOIE = Timer Overflow Interrupt Enable
   // - There are also some other registers (like OCR2A and OCR2B), but these are not needed
-  
+
   // Step 1: Determine the optimal value for the PRESCALER
   // If X-tal = 16.000.000 Hz, a Prescaler of 8 gives for T77US => 154
-  // If X-tal = 11.059.200 Hz, a Prescaler of 8 gives for T77US => 106,4448  
+  // If X-tal = 11.059.200 Hz, a Prescaler of 8 gives for T77US => 106,4448
   #define T2_PRESCALER   8    // acceptable values are 1, 8, 64, 256, 1024
   #if   (T2_PRESCALER==1)
     #define T2_PRESCALER_BITS   ((0<<CS02)|(0<<CS01)|(1<<CS00))
@@ -122,24 +122,25 @@ void init_timer2(void) {
     #warning T77US too small, use either smaller prescaler or faster processor
   #endif
 
-  // Step 3: Set the Timer 2 registers  
+  // Step 3: Set the Timer 2 registers
   // The timer will be used in overflow mode, so an interrupt occurs at MAX+1 (=256)
   // We preload the Timer Value to 256 - T77US in this init routine plus the Timer ISR
   // and not in the DCC Interrupt routine, where the timer is actually started.
   // Therefore, if there are glitches in the DCC Input signal that lead to multiple
-  // DCC Interrupts, only the first interrupt matters. 
+  // DCC Interrupts, only the first interrupt matters.
   noInterrupts();              // disable all interrupts
   // Stop the timer and preload its value for the next cycle
+  // TODO SHOULD THIS BE #if defined OR #ifdef
   #if defined(TCCR2)           // ATMEGA 8535, 16, 32, 64, 162 etc
   TCCR2 = 0;                   // 0 => timer is stopped
-  TCNT2 = 256L - T77US;        // preload the timer 
+  TCNT2 = 256L - T77US;        // preload the timer
   TIMSK |= (1 << TOIE2);       // the timer is used in overflow interrupt mode
   #elif defined(TCCR2A)        // ATMEGA 328, 2560 etc.
   TCCR2A = 0;                  // should be zero for our purpose
   TCCR2B = 0;                  // 0 => timer is stopped
-  TCNT2 = 256L - T77US;        // preload the timer 
+  TCNT2 = 256L - T77US;        // preload the timer
   TIMSK2 |= (1 << TOIE2);      // the timer is used in overflow interrupt mode
-  #endif 
+  #endif
   interrupts();                // enable all interrupts
 }
 
@@ -158,20 +159,20 @@ void dcc_interrupt(void) {
 
 
 //******************************************************************************************************
-// 5. begin() / end()
+// 5. attach() / detach()
 //******************************************************************************************************
-// The DCC input signal should be connected to dccPin 
+// The DCC input signal should be connected to dccPin
 // The interrupt routine that reads the value of that pin must be fast.
 // The traditional Arduino digitalRead() function is relatively slow, certainly when compared to direct
 // port reading, which can be done (for example) as follows: DccBitVal = !(PIND & (1<<PD3);
-// However, direct port reading has as disadvantage that the port and mask should be hardcoded, 
-// and can not be set by the main sketch, thus the user of this library. 
+// However, direct port reading has as disadvantage that the port and mask should be hardcoded,
+// and can not be set by the main sketch, thus the user of this library.
 // Therefore we take a slightly slower approach, and use a variable called "portInputRegister",
 // which points to the right input port, and "bit", which masks the selected input port.
 // To use "portInputRegister" and "bit", we basically split the Arduino digitalRead() function into:
 // 1) an initialisation part, which maps dccPin to "portInputRegister" and "bit". This part may be slow
 // 2) The actual reading from the port, which is fast.
-// 
+//
 // Comparison between approaches:               Flash  RAM  Time  Delta
 //   value = (PINC & bit);                        6     1   1,09    -
 //   value = (*portRegister & bit);              14     1   1,54   0,45
@@ -180,20 +181,20 @@ void dcc_interrupt(void) {
 //           Note: Flash & RAM in bytes / Time & Delta in microseconds
 
 
-void DccMessage::begin(uint8_t dccPin, uint8_t ackPin) {
-  // Initialize the local variables 
+void DccMessage::attach(uint8_t dccPin, uint8_t ackPin) {
+  // Initialize the local variables
   _dccPin = dccPin;
   dccrec.state = WAIT_PREAMBLE ;
   dccrec.bitCount = 0 ;
   dccrec.tempByte = 0 ;
   // initialise the global variables (the DccMessage attributes)
-  dccMessage.size = 0; 
-  dccMessage.isReady = 0; 
+  dccMessage.size = 0;
+  dccMessage.isReady = 0;
   // In case of occupancy detection decoders we may start AD conversion
   #if defined(VOLTAGE_DETECTION)
   adcStart.newRequest = 0;
   #endif
-  // Initialize Timer2 before the DCC ISR, since that ISR will start the timer   
+  // Initialize Timer2 before the DCC ISR, since that ISR will start the timer
   init_timer2();
   // Intialise the DCC interupt routine
   pinMode(dccPin, INPUT_PULLUP);
@@ -209,8 +210,8 @@ void DccMessage::begin(uint8_t dccPin, uint8_t ackPin) {
 }
 
 
-void DccMessage::end(void) {
-  // Detach the ISR  
+void DccMessage::detach(void) {
+  // Detach the ISR
   detachInterrupt(digitalPinToInterrupt(_dccPin));
   // Stop the Timer 2
   #if defined(TCCR2)           // ATMEGA 8535, 16(A), 162 etc
@@ -224,9 +225,9 @@ void DccMessage::end(void) {
 //******************************************************************************************************
 // 6. The Timer2 ISR, which implements the DCC Receive Routine
 //******************************************************************************************************
-// Timer2 Interrupt Routine: read the value of the DCC signal 
+// Timer2 Interrupt Routine: read the value of the DCC signal
 // Execution of this DCC Receive code typically takes between 3 and 8 microseconds.
-ISR(TIMER2_OVF_vect) {  
+ISR(TIMER2_OVF_vect) {
   // Read the DCC input value, if the input is low then its a 1 bit, otherwise it is a 0 bit
   uint8_t DccBitVal;
   DccBitVal = !(*dccIn.portRegister & dccIn.bit);
@@ -265,7 +266,7 @@ ISR(TIMER2_OVF_vect) {
   // - Data Byte Start Bit + Data Byte [0 or more times]
   // - Packet End Bit
 
-      
+
   case WAIT_PREAMBLE:
     // The preamble to a packet consists of a sequence of "1" bits.
     // A digital decoder must not accept as a valid, any preamble
@@ -307,7 +308,7 @@ ISR(TIMER2_OVF_vect) {
       if(dccrec.tempMessageSize == MaxDccSize )       // Packet is too long - abort
       {
         dccrec.state = WAIT_PREAMBLE;
-        dccrec.bitCount = 0;       
+        dccrec.bitCount = 0;
       }
       else
       {
