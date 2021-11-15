@@ -108,7 +108,7 @@ Dcc::CmdType_t LocoMessage::analyse(void) {
   //
   // Step 1: Determine the loco address, and make already a copy of 
   // the instruction byte that defines the kind of command (CCC bits), as well as data
-  if (byte0 & 0b1000000) {          // The first bit differentiates between basic and extended packets
+  if (byte0 & 0b10000000) {          // The first bit differentiates between basic and extended packets
     locoCmd.longAddress = true;     // It is an extended packet, with a 12 bit address (1..4096)
     locoCmd.address = ((byte0 & 0b00111111) << 8) | (dccMessage.data[1]);
     instructionByte = dccMessage.data[2];
