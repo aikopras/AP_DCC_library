@@ -26,7 +26,7 @@
 //            - a free to chose interrupt pin (dccpin) for the DCC input signal
 //            - a free to chose digital output pin for the DCC-ACK signal
 //
-// This source file is subject of the GNU general public license 2,
+// This source file is subject of the GNU general public license 3,
 // that is available at the world-wide-web at http://www.gnu.org/licenses/gpl.txt
 //
 //******************************************************************************************************
@@ -70,7 +70,7 @@ class Dcc {
     CmdType_t cmdType;                           // What kind of DCC message did we receive?
 
     void attach(uint8_t dccPin,
-                uint8_t ackPin=255);             // Start the timer and DCC ISR
+                uint8_t ackPin=255);             // Start the timer and DCC ISR. Pins are Arduino Pin numbers
     void detach(void);                           // Stops the timer and DCC ISR
     bool input(void);                            // Analyze the DCC message received. Returns true, if new message
     void sendAck();                              // Create a 6ms DCC ACK signal (needed for Service Mode)

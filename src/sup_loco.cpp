@@ -5,7 +5,7 @@
 // author:    Aiko Pras
 // version:   2021-05-15 V1.0.2 ap initial version
 //
-// This source file is subject of the GNU general public license 2,
+// This source file is subject of the GNU general public license 3,
 // that is available at the world-wide-web at http://www.gnu.org/licenses/gpl.txt
 //
 //******************************************************************************************************
@@ -58,7 +58,7 @@ bool LocoMessage::IsMyAddress() {
   // The broadcast address for multi function (loco) decoders is 0
   // This adres is already handled by Dcc::analyze_broadcast_message, and therefore doesn't have
   // to be considered here.
-  const unsigned int broadcast_address = 0;
+  // const unsigned int broadcast_address = 0;
   return ((locoCmd.address >= myLocoAddressFirst) && (locoCmd.address <= myLocoAddressLast));
 }
 
@@ -108,7 +108,7 @@ Dcc::CmdType_t LocoMessage::analyse(void) {
   //
   // Step 1: Determine the loco address, and make already a copy of 
   // the instruction byte that defines the kind of command (CCC bits), as well as data
-  if (byte0 & 0b10000000) {          // The first bit differentiates between basic and extended packets
+  if (byte0 & 0b10000000) {         // The first bit differentiates between basic and extended packets
     locoCmd.longAddress = true;     // It is an extended packet, with a 12 bit address (1..4096)
     locoCmd.address = ((byte0 & 0b00111111) << 8) | (dccMessage.data[1]);
     instructionByte = dccMessage.data[2];
@@ -186,7 +186,7 @@ Dcc::CmdType_t LocoMessage::analyse(void) {
   // Step 3: Ignore all remaining loco commands, unless they are intended for this decoder
   // Note that SPEED commands allready returned
   if (IsMyAddress() == false) return (Dcc::IgnoreCmd);
-  
+
   // **************************************************************************************
   // From now on the fast majority of loco messages have been filtered, since the remaining
   // messages are all addressed to this loco. We'll further focus on commands that are

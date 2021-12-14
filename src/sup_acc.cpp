@@ -5,7 +5,7 @@
 // author:    Aiko Pras
 // version:   2021-05-15 V1.0.2 ap initial version
 //
-// This source file is subject of the GNU general public license 2,
+// This source file is subject of the GNU general public license 3,
 // that is available at the world-wide-web at http://www.gnu.org/licenses/gpl.txt
 // 
 // Accessory Digital Decoder Packet Formats:
@@ -151,7 +151,7 @@ AccMessage::AccMessage(){
 
 bool AccMessage::IsMyAddress() {
   const unsigned int broadcast_address = 2047;
-  return ((accCmd.decoderAddress >= myAccAddrFirst) && (accCmd.decoderAddress <= myAccAddrLast)
+  return (((accCmd.decoderAddress >= myAccAddrFirst) && (accCmd.decoderAddress <= myAccAddrLast))
        || (accCmd.decoderAddress == broadcast_address));
 }
 
@@ -198,19 +198,8 @@ Dcc::CmdType_t AccMessage::analyse(void) {
       accCmd.decoderAddress = msb + lsb - 1;
       break;
   }
-  // Step 2: Immediately return if this message is not intended for this decoder.
-  // In this case MAIN may only use the decoderAddress (which is useful for initialising the decoder).
-  // We filter retrainsmissions
-  if (!IsMyAddress()) {                                 // Decoder address not in my own range
-    if (accCmd.decoderAddress == decoderAddress_old)    // Is this for the same address as the previous?
-      return(Dcc::IgnoreCmd);                           // We already notified main before, so ignore
-    else {                                              // This command is for a new address
-      decoderAddress_old = accCmd.decoderAddress;       // Save it
-      return(Dcc::AnyAccessoryCmd);                     // And inform main that there is a new address
-    }
-  }
   //
-  // Step 3: Determine the other attributes (the message is addressed to this decoder)
+  // Step 2: Determine the other attributes
   uint8_t byte1 = dccMessage.data[1];                   // This may now be stored in a register
   uint8_t byte2 = dccMessage.data[2];                   // This could be the error byte
   accCmd.turnout =  ((byte1 & 0b00000110) >> 1) + 1;    // 1..4 - Decoders have 4 switches
@@ -219,9 +208,23 @@ Dcc::CmdType_t AccMessage::analyse(void) {
   accCmd.activate = ((byte1 & 0b00001000) >> 3);        // 0..1 - Activate the coil, servo, relay, ...
   // Note that only activates are expected, and no deactivates
   //
-  // Step 4: Determine the outputAddress
-  // 0..2047 => address of individual switch or signal
+  // Step 3: Determine the outputAddress
+  // 1..2048 => address of individual switch or signal
   accCmd.outputAddress = (accCmd.decoderAddress * 4) + accCmd.turnout;
+  //
+  // Step 4: Return if this message is not intended for this decoder.
+  // In this case MAIN may use the decoderAddress / outputAddress for initialising the decoder
+  // We filter retrainsmissions
+  if (!IsMyAddress()) {                                 // Decoder address not in my own range
+    if ((accCmd.decoderAddress == decoderAddress_old) &&
+        (accCmd.device == device_old))                  // Is this for the same address & device as the previous?
+      return(Dcc::IgnoreCmd);                           // We already notified main before, so ignore
+    else {                                              // This command is for a new address
+      decoderAddress_old = accCmd.decoderAddress;       // Save it
+      device_old = accCmd.device;                       // Save it
+      return(Dcc::AnyAccessoryCmd);                     // And inform main that there is a new address
+    }
+  }
   //
   // Step 5: Determine the kind of accessory command. Possible options include:
   // - Basic accessory command, used for switches and relays

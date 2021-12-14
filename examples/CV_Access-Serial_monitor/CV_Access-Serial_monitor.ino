@@ -8,9 +8,10 @@
 // version:   2021-06-01 V1.0 ap initial version
 //
 // usage:     This sketch should declare the following objects:
-//            - extern Dcc           dcc;     // The main DCC object
+//            - extern Dcc           dcc;      // The main DCC object
 //            - extern Loco          locoCmd;  // To set the Loco address (for PoM)
 //            - extern CvAccess      cvCmd;    // To retrieve the data from pom and sm commands
+//            Note the 'extern' keyword, since these objects are instantiated in DCC_Library.cpp
 //
 //            Setup() should call dcc.attach(dccPin, ackPin).
 //            - dccPin is the interrupt pin for the DCC signal,
@@ -19,20 +20,19 @@
 //            dcc.cmdType tells what kind of command was received.
 //
 //
-// hardware:  - Timer 2 is used
+// hardware:  - Timer 2 or TCB0 is used
 //            - a free to chose interrupt pin (dccpin) for the DCC input signal
 //            - a free to chose digital output pin for the DCC-ACK signal
 //
-// This source file is subject of the GNU general public license 2,
+// This source file is subject of the GNU general public license 3,
 // that is available at the world-wide-web at http://www.gnu.org/licenses/gpl.txt
 //
 //******************************************************************************************************
 #include <Arduino.h>
 #include <AP_DCC_library.h>
 
-//const uint8_t dccPin = 11;       // Pin 11 on the ATMega 16 is INT1
-const uint8_t dccPin = 20;       // Pin 20 on the ATMega2560 - Liftdecoder is INT1
-const uint8_t ackPin = 8;        // Digital Pin 8 on the ATMega2560 (is PH5)
+const uint8_t dccPin = 3;        // Pin 3 on the UNO, Nano etc. is INT1
+const uint8_t ackPin = 7;        // On the UNO, Nano etc. we use Digital Pin 7
 
 extern Dcc dcc;                  // This object is instantiated in DCC_Library.cpp
 extern Loco locoCmd;             // To retrieve the data from loco commands  (7 & 14 bit)
@@ -48,14 +48,13 @@ const uint8_t PoM = 2;
 
 
 void setup() {
-  dcc.attach(dccPin, ackPin);
-  // initialize serial communication at 115200 bits per second:
+    // initialize serial communication at 115200 bits per second:
   Serial.begin(115200);
-  Serial.println("");
+  delay(1000);
+  Serial.println("Test DCC lib - Configuration Variable Access Commands");  
+  dcc.attach(dccPin, ackPin);
   // Set Loco address. We may also specify an address range.
   locoCmd.SetMyAddress(5000);
-  delay(1000);
-  Serial.println("Test DCC lib - Configuration Variable Access Commands");
 }
 
 
@@ -108,6 +107,9 @@ void cv_operation(const uint8_t op_mode) {
         }
         Serial.println();
       break;
+ 
+      default:
+      break;
     }
   }
   Serial.println();
@@ -134,6 +136,8 @@ void loop() {
        cv_operation(SM);
       break;
 
+      default:
+      break;
     }
   }
 }

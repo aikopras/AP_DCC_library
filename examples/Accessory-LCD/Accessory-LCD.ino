@@ -10,6 +10,7 @@
 // usage:     This sketch should declare the following objects:
 //            - extern Dcc           dcc;     // The main DCC object
 //            - extern Accessory     accCmd;  // To retrieve the data from accessory commands
+//            Note the 'extern' keyword, since these objects are instantiated in DCC_Library.cpp
 //
 //            Setup() should call dcc.attach(dccPin). dccPin is the interrupt pin for the DCC signal
 //            The main loop() should call dcc.input() as often as possible. If there is input,
@@ -17,18 +18,17 @@
 //            In this sketch we react on MyAccessoryCmd and AnyAccessoryCmd).
 //
 //
-// hardware:  - Timer 2 is used
+// hardware:  - Timer 2 or TCB0 is used
 //            - a free to chose interrupt pin (dccpin) for the DCC input signal
-//            - a free to chose digital output pin for the DCC-ACK signal
 //
-// This source file is subject of the GNU general public license 2,
+// This source file is subject of the GNU general public license 3,
 // that is available at the world-wide-web at http://www.gnu.org/licenses/gpl.txt
 //
 //******************************************************************************************************
 #include <Arduino.h>
 #include <AP_DCC_library.h>
 #include <LiquidCrystal.h>
-// For the ATMEGA16 - Mightycore standard we need:
+// For the ATMEGA16 - Mightycore we need:
 // LiquidCrystal lcd(4, 5, 6, 0, 1, 2, 3);
 // For the ATMEGA2560 - Lift decoder we need:
 LiquidCrystal lcd(53, 51, 50, 12, 11, 9, 10);
@@ -37,7 +37,7 @@ LiquidCrystal lcd(53, 51, 50, 12, 11, 9, 10);
 const uint8_t dccPin = 20;       // Pin 20 on the ATMega2560 - Liftdecoder is INT1
 
 extern Dcc dcc;                  // This object is instantiated in DCC_Library.cpp
-extern Accessory accCmd;         // This object is instantiated in DCC_Library.cpp
+extern Accessory accCmd;         // To retrieve data from accessory commands
 
 void setup() {
   dcc.attach(dccPin);
@@ -80,6 +80,8 @@ void loop() {
         lcd.print(" (any)");
       break;
 
+      default:
+      break;
     }
   }
 }

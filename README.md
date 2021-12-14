@@ -140,7 +140,7 @@ _**1. Decoder based addressing (basic):**_
 
 The most common type of accessory decoder is the switch decoder, which connects upto 4 switches. Such decoders understand basic accesory commands, and their fields can be interpreted as follows:
   #### decoderAddress (0..511) ####
-  The address of the decoder (board). The NMRA standard defines 9-bits for decoder addresses, although some command stations (like the LENZ LZV101 with XpressNet V3.6) support only 8 bits (0..255).
+    The address of the decoder (board). The NMRA standard defines 9-bits for decoder addresses, although some command stations (like the LENZ LZV101 with XpressNet V3.6) support only 8 bits (0..255).
   #### turnout (1..4) ####
   The `turnout` attribute tells which of the four switches is being targeted.
 

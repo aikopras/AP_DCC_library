@@ -1,46 +1,36 @@
 //******************************************************************************************************
 //
-// file:      support_isr.h
-// purpose:   DCC receiving code for ATmega AVRs (16, 328, 2560, ...) using the Arduino libraries
+// file:      sup_isr.h
+// purpose:   DCC receiving code for ATmega(X) processors
 // author:    Aiko Pras
 // version:   2021-05-15 V1.0.2 ap initial version
+//            2021-07-27 V1.1.0 ap Modifications to support MegaX processors (timer TCB)
+//            2021-09-02 V1.2.0 ap Restructure, to better support different ATmega processors
+//                                 DCC signal detection is significantly improved if used with
+//                                 an ATmegaX (ATmega4808, ATmega4809, AVR DA, AVR DB, ...) processor
 //
 // history:   This is a further development of the OpenDecoder 2 software, as developed by W. Kufer.
 //            It implements the DCC receiver code, in particular the layer 1 (bit detection) and
 //            layer 2 (packet construction) part. The code has been adapted for Arduino by A. Pras.
-//            Note that this code his simularities with version 1 of the NmraDcc V1.2.1 library.
-//            An important difference is that readability of this code should be clearer.
 //
 // Used hardware resources:
-//  - INTx:   The DCC input signal (any available hardware INT)
-//  - Timer2: To read the DCC input signal after 77us to determine if we receive a DCC 0 or 1
-//
-// The Arduino and the (standard) mightycore boards support the following Interrupts and pins:
-//  Interrupt   Port   Pin   Where
-//    INT0      PD2      2   All standard Arduino boards
-//    INT1      PD3      3   All standard Arduino boards
-//    INT0      PD0     21   MEGA
-//    INT1      PD1     20   MEGA
-//    INT2      PD2     19   MEGA
-//    INT3      PD3     18   MEGA
-//    INT4      PE4      2   MEGA
-//    INT5      PE5      3   MEGA
-//    INT0      PD2     10   Mightycore - ATmega 8535/16/32/164/324/644/1284
-//    INT1      PD3     11   Mightycore - ATmega 8535/16/32/164/324/644/1284
-//    INT2      PB2      2   Mightycore - ATmega 8535/16/32/164/324/644/1284
-//
-// Note that the user shuld define "MaxDccSize"
+//  - Pin:    The DCC input signal (for traditional AtMega processors this must be an Interrupt pin)
+//  - Timer:  To read the DCC input signal after 77us to determine if we receive a DCC 0 or 1
+//            For traditional ATMega processors this must be Timer 2; for ATMegaX processors it
+//            can be any available TCB timer.
+// - Event:   For AtMegaX processors: an Event channel
+// See the processor / board specific header file for detailed requirements
 //
 //******************************************************************************************************
 #pragma once
+#define MaxDccSize 6                              // DCC messages can have a length upto this value
 
 // The DCC message that has just been received.
 class DccMessage {
   public:
     volatile uint8_t isReady;                     // Flag that DCC message has been received and can be decoded
-
-    volatile uint8_t data[MaxDccSize];            // The contents of the last dcc message received
     volatile uint8_t size;                        // 3 .. 6, including XOR
+    volatile uint8_t data[MaxDccSize];            // The contents of the last dcc message received
 
     void attach(uint8_t dccPin, uint8_t ackPin);  // Initialises the timer and DCC input Interrupt Service Routines
     void detach(void);                            // Stops the timer and DCC input ISRs, for example before a restart

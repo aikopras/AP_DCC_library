@@ -5,7 +5,7 @@
 // author:    Aiko Pras
 // version:   2021-05-15 V1.0.2 ap initial version
 //
-// This source file is subject of the GNU general public license 2,
+// This source file is subject of the GNU general public license 3,
 // that is available at the world-wide-web at http://www.gnu.org/licenses/gpl.txt
 //
 //******************************************************************************************************

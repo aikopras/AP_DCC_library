@@ -23,7 +23,7 @@
 //            (in German, by railcommunity.org), which include more detailed descriptions as well as
 //            the differences in accesory decoder addresses.
 //
-// This source file is subject of the GNU general public license 2,
+// This source file is subject of the GNU general public license 3,
 // that is available at the world-wide-web at http://www.gnu.org/licenses/gpl.txt
 //
 //******************************************************************************************************
@@ -101,6 +101,7 @@ Dcc::CmdType_t Dcc::analyze_broadcast_message(void) {
     locoMessage.reset_speed();
     return(MyLocoSpeedCmd);
   }
+  return(IgnoreCmd);
 };
 
 
