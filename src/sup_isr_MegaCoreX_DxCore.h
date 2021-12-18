@@ -125,7 +125,7 @@ static volatile TCB_t* _timer;                // In init and detach we use a poi
 //******************************************************************************************************
 // 4. Initialise timer and event system
 //******************************************************************************************************
-void initTcb(void) {
+void DccMessage::initTcb(void) {
   // Step 1: Instead of calling a specific timer directly, in init and detach we use a pointer to the
   // selected timer. However, since pointers add a level of indirection, within the timer ISR the two
   // registers that we use (EVCTRL and CCMP) will be directly accessed via #defines
@@ -175,7 +175,7 @@ void initTcb(void) {
 }
 
 
-void initEventSystem(uint8_t dccPin) {
+void DccMessage::initEventSystem(uint8_t dccPin) {
   // Note: this code uses the new Event Library of MegaCoreX
   // This Library has not (yet) been copied to the DxCore
   noInterrupts();

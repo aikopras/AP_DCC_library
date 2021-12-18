@@ -37,6 +37,8 @@ class DccMessage {
 
   private:
     uint8_t _dccPin;                              // Here we store a local copy of the DCC input pin
+    void initTcb(void);                           // Specific for the MegaCoreX/DxCore variant
+    void initEventSystem(uint8_t dccPin);         // Specific for the MegaCoreX/DxCore variant
 };
 
 
