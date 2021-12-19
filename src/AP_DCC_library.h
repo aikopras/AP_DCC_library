@@ -156,7 +156,7 @@ class Dcc {
 // to deal with different command station behavior. The default value is "Lenz".
 //
 // An Accesory Decoder may listen to one or multiple decoder addresses, for example if it supports more than
-// four switches or skips uneven addresses. After startup, a call should be made to SetMyAddress().
+// four switches or skips uneven addresses. After startup, a call should be made to setMyAddress().
 // If the call includes a single parameter, that parameter represents the (single) address this decoder
 // will listen to. If the call includes two parameters, these parameters represent the range of addresses
 // this decoder will listen to.
@@ -171,7 +171,7 @@ class Accessory {
   public:
   
     // Decoder specific attributes should be initialised in setup()
-    void SetMyAddress(unsigned int first, unsigned int last = 65535);
+    void setMyAddress(unsigned int first, unsigned int last = 65535);
     uint8_t myMaster = Lenz;
 
     // The next attributes inform the main sketch about the contents of the received accessory command
@@ -195,7 +195,7 @@ class Accessory {
 //                                               LOCO COMMANDS
 //******************************************************************************************************
 // After startup, the Loco object should be initialised with the range of loco addresses it will listen
-// too. For that purpose a call should be made to SetMyAddress(). If the call includes a single
+// too. For that purpose a call should be made to setMyAddress(). If the call includes a single
 // parameter, that parameter represents the (single) loco address this decoder will listen to.
 // If the call includes two parameters, these parameters represent the range of loco addresses this
 // decoder will listen to.
@@ -209,7 +209,7 @@ class Accessory {
 class Loco {
   public:
     // Decoder specific attributes. Should be initialised in setup()
-    void SetMyAddress(unsigned int first, unsigned int last = 65535);
+    void setMyAddress(unsigned int first, unsigned int last = 65535);
 
     // Attributes that contain information from the received loco message
     unsigned int address;              // 0..9999  - Received Loco addres

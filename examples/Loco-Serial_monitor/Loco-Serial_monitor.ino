@@ -46,7 +46,7 @@ void setup() {
   dcc.attach(dccPin);
   pinMode(LED_BUILTIN, OUTPUT);
   // Set Loco address. We may also specify an address range.
-  locoCmd.SetMyAddress(5000);
+  locoCmd.setMyAddress(5000);
 }
 
 

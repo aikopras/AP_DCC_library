@@ -162,7 +162,7 @@ void Dcc::sendAck(void) {
 //******************************************************************************************************
 //                                      The Accessory Class
 //******************************************************************************************************
-void Accessory::SetMyAddress(unsigned int first, unsigned int last) {
+void Accessory::setMyAddress(unsigned int first, unsigned int last) {
   // This method should be called in setup() of the main sketch
   // If called with a single parameter, that parameter will be the decoder's Accessory address.
   // In that case "last" has the default value 65535 (maxint)
@@ -176,7 +176,7 @@ void Accessory::SetMyAddress(unsigned int first, unsigned int last) {
 //******************************************************************************************************
 //                                            The Loco Class
 //******************************************************************************************************
-void Loco::SetMyAddress(unsigned int first, unsigned int last) {
+void Loco::setMyAddress(unsigned int first, unsigned int last) {
   // This method should be called in setup() of the main sketch
   // If called with a single parameter, that parameter will be the decoder's Loco address.
   // In that case "last" has the default value 65535 (maxint)

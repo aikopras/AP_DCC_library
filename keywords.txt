@@ -1,0 +1,89 @@
+#########################################
+# Syntax Coloring Map For AP_DCC_library 
+#########################################
+
+#########################################
+# Datatypes (KEYWORD1)
+#########################################
+Dcc				KEYWORD1
+Accessory			KEYWORD1
+Loco				KEYWORD1
+CvAccess			KEYWORD1
+
+#########################################
+# Methods and Functions (KEYWORD2)
+#########################################
+attach				KEYWORD2
+detach				KEYWORD2
+input				KEYWORD2
+sendAck				KEYWORD2
+setMyAddress			KEYWORD2
+writeBit			KEYWORD2
+verifyBit			KEYWORD2
+
+IgnoreCmd			KEYWORD2
+ResetCmd			KEYWORD2
+SomeLocoMovesFlag		KEYWORD2
+MyLocoSpeedCmd			KEYWORD2
+MyEmergencyStopCmd		KEYWORD2
+MyLocoF0F4Cmd			KEYWORD2
+MyLocoF5F8Cmd			KEYWORD2
+MyLocoF9F12Cmd			KEYWORD2
+MyLocoF13F20Cmd			KEYWORD2
+MyLocoF21F28Cmd			KEYWORD2
+MyLocoF29F36Cmd			KEYWORD2
+MyLocoF37F44Cmd			KEYWORD2
+MyLocoF45F52Cmd			KEYWORD2
+MyLocoF53F60Cmd			KEYWORD2
+MyLocoF61F68Cmd			KEYWORD2
+AnyAccessoryCmd			KEYWORD2
+MyAccessoryCmd			KEYWORD2
+MyPomCmd			KEYWORD2
+SmCmd				KEYWORD2
+errorXOR			KEYWORD2
+
+decoderAddress			KEYWORD2
+outputAddress			KEYWORD2
+myMaster			KEYWORD2
+command				KEYWORD2
+device				KEYWORD2
+turnout				KEYWORD2
+position			KEYWORD2
+activate			KEYWORD2
+signalHead			KEYWORD2
+
+address				KEYWORD2
+longAddress			KEYWORD2
+trainsMoving			KEYWORD2
+emergencyStop			KEYWORD2
+speed				KEYWORD2
+forward				KEYWORD2
+F0F4				KEYWORD2
+F5F8				KEYWORD2
+F9F12				KEYWORD2
+F13F20				KEYWORD2
+F21F28				KEYWORD2
+F29F36				KEYWORD2
+F37F44				KEYWORD2
+F45F52				KEYWORD2
+F53F60				KEYWORD2
+F61F68				KEYWORD2
+
+operation			KEYWORD2
+number				KEYWORD2
+value				KEYWORD2
+writecmd			KEYWORD2
+bitvalue			KEYWORD2
+bitposition			KEYWORD2
+
+#########################################
+# Instances (KEYWORD2)
+#########################################
+
+
+#########################################
+# Constants (LITERAL1)
+#########################################
+Roco				LITERAL1
+Lenz				LITERAL1
+OpenDCC				LITERAL1

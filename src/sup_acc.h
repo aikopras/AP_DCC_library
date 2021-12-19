@@ -17,7 +17,7 @@ class AccMessage {
     AccMessage();                    // The constructor, to initialise values
     Dcc::CmdType_t analyse(void);    // The standard method to analyse Accessory Commands
 
-    // Address range. Initialised by Accessory::SetMyAddress(... first, ... last = 65535);
+    // Address range. Initialised by Accessory::setMyAddress(... first, ... last = 65535);
     unsigned int myAccAddrFirst;     // 0..510  - First accessory decoder address this decoder will listen too
     unsigned int myAccAddrLast;      // 0..510  - Last accessory decoder address this decoder will listen too
 

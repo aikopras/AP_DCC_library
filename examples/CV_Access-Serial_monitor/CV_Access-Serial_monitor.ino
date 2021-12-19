@@ -54,7 +54,7 @@ void setup() {
   Serial.println("Test DCC lib - Configuration Variable Access Commands");  
   dcc.attach(dccPin, ackPin);
   // Set Loco address. We may also specify an address range.
-  locoCmd.SetMyAddress(5000);
+  locoCmd.setMyAddress(5000);
 }
 
 

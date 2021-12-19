@@ -43,7 +43,7 @@ void setup() {
   accCmd.myMaster = Lenz;
   // Set Accessory address. We may also specify an address range.
   // Note: my decoder address = output (switch) address / 4
-  accCmd.SetMyAddress(24);    // Decoder 24 is switch 97..100
+  accCmd.setMyAddress(24);    // Decoder 24 is switch 97..100
 }
 
 
