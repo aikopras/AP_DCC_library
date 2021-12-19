@@ -22,7 +22,11 @@
 //            that, even in noisy environments, commands will be received. Such retransmissions
 //            will be filtered within this library. The main sketch will not receive retransmissions.
 //
-// hardware:  - Timer 2 or TCB0 is used
+// hardware:  - On traditional ATMega processors Timer 2 is used.
+//              On novel (MegaCoreX, DxCore) ATMega processors, TCB0 is used (another TCB may be
+//              selected by uncommenting the associated #define in sup_isr_MegaCoreX_DxCore.h
+//              In addition, on these new processors, also a free Event channel and some General
+//              PurPose Data Registers (GPIOR0 - GPIOR2) are used.
 //            - a free to chose interrupt pin (dccpin) for the DCC input signal
 //            - a free to chose digital output pin for the DCC-ACK signal
 //
