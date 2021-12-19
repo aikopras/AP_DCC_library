@@ -22,7 +22,7 @@
 //            that, even in noisy environments, commands will be received. Such retransmissions
 //            will be filtered within this library. The main sketch will not receive retransmissions.
 //
-// hardware:  - Timer 2 is used
+// hardware:  - Timer 2 or TCB0 is used
 //            - a free to chose interrupt pin (dccpin) for the DCC input signal
 //            - a free to chose digital output pin for the DCC-ACK signal
 //
@@ -73,7 +73,7 @@ class Dcc {
                 uint8_t ackPin=255);             // Start the timer and DCC ISR. Pins are Arduino Pin numbers
     void detach(void);                           // Stops the timer and DCC ISR
     bool input(void);                            // Analyze the DCC message received. Returns true, if new message
-    void sendAck();                              // Create a 6ms DCC ACK signal (needed for Service Mode)
+    void sendAck(void);                          // Create a 6ms DCC ACK signal (needed for Service Mode)
 
 
     uint8_t errorXOR;                            // The number of DCC packets with an incorrect checksum
