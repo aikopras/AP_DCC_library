@@ -100,7 +100,7 @@ In case of a basic accessory command:
 Since all attributes will get the correct values, the choice which attributes to use is upto the sketch writer.
 
 #### void setMyAddress(unsigned int first, unsigned int last = 65535) ####
-Should be initialised in setup() of the main sketch.
+Should be initialised in setup() of the main sketch. This is the decoder address, not the switch address!
 An Accessory Decoder may listen to one or multiple decoder addresses, for example if it supports more than four switches or skips uneven addresses. If the call includes a single parameter, that parameter represents the (single) address this decoder will listen to. If the call is made with two parameters, these parameters represent the range of addresses this decoder listens to.
 
 
