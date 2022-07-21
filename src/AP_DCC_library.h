@@ -53,6 +53,7 @@ class Dcc {
       Unknown,                                   // Start value, but should never be returned
       IgnoreCmd,                                 // Command should be ignored
       ResetCmd,                                  // We have received a reset command
+      SomeLocoSpeedFlag,                         // Loco speed = 0, but not for this decoder => end of Reset
       SomeLocoMovesFlag,                         // Loco speed > 0, but not for this decoder
       MyLocoSpeedCmd,                            // Loco speed and direction command, for this decoder
       MyEmergencyStopCmd,                        // Loco Emergency stop, for this decoder
@@ -214,7 +215,6 @@ class Loco {
     // Attributes that contain information from the received loco message
     unsigned int address;              // 0..9999  - Received Loco addres
     bool         longAddress;          // Was the received adress 14 bit, or 7-bit?
-    bool         trainsMoving;         // Flag: set if we receive for any decoder a speed command > 0
     bool         emergencyStop;        // Flag: emargency stop for this decoder
     uint8_t      speed;                // 0..28 / 0..127
     bool         forward;              // True = Forward / False = Reverse

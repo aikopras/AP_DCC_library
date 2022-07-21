@@ -4,6 +4,7 @@
 // purpose:   Loco decoder functions to support the DCC library
 // author:    Aiko Pras
 // version:   2021-05-15 V1.0.2 ap initial version
+//            2022-07-21 V1.0.3 ap trainsMoving flag was removed, since we have SomeLocoMovesFlag
 //
 // This source file is subject of the GNU general public license 3,
 // that is available at the world-wide-web at http://www.gnu.org/licenses/gpl.txt
@@ -30,7 +31,6 @@ extern CvMessage    cvMessage;          // Interface to sup_cv
 LocoMessage::LocoMessage() {
   locoCmd.address = 65535;              // No adddress received yet
   locoCmd.longAddress = false;          // We start with a 7-bit address
-  locoCmd.trainsMoving = false;         // Clear flag
   locoCmd.emergencyStop = false;        // Clear flag
   // Ensure that, if not initialised, no messages matches my address
   myLocoAddressFirst = 65535;
@@ -177,9 +177,10 @@ Dcc::CmdType_t LocoMessage::analyse(void) {
     else {
       // The loco speed command is not for this decoder, but we still check if the speed > 0.
       // The reason is that safety decoders may need to know if there are still trains moving.
-      // If the speed > 0, we return with the SomeLocoMovesFlag, otherwise with IgnoreCmd
+      // If the speed > 0, we return with the SomeLocoMovesFlag. Otherwise with the
+      // SomeLocoSpeedFlag, which can be used to detect the end of a RESET (Halt) period.
       if (speed > 0) return(Dcc::SomeLocoMovesFlag);
-      return(Dcc::IgnoreCmd);
+      return(Dcc::SomeLocoSpeedFlag);
     }
   }
   

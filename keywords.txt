@@ -54,7 +54,6 @@ signalHead			KEYWORD2
 
 address				KEYWORD2
 longAddress			KEYWORD2
-trainsMoving			KEYWORD2
 emergencyStop			KEYWORD2
 speed				KEYWORD2
 forward				KEYWORD2
