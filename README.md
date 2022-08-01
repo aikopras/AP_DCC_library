@@ -154,7 +154,7 @@ There are several conditions to be satisfied before CV access commands can be ac
 
 To determine the value of a specific CV, a Command Station usually sends 8 consecutive verify bit commands, one to check each individual bit of the 8-bit variable. After that, the Command Station may issue a verify byte command, to ensure no errors occurred.
 
-The following data can be obtained from the Loco class:
+The following data can be obtained from the CvAccess class:
 ````
 unsigned int number;      // 1..1024 - CV number
 uint8_t value;            // 0..255  - CV value
