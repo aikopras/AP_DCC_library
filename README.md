@@ -1,4 +1,4 @@
-# AP_DCC_Library #
+# <a name="AP_DCC_Library"></a>AP_DCC_Library #
 
 This Arduino library decodes (NMRA) Digital Command Control (DCC) messages. It is primarily intended for accessory Decoders and runs on ATMega processors.
 
@@ -7,7 +7,7 @@ Like the NmraDcc library, this library runs on ATMega processors, such as the AT
 
 ___
 
-## The DCC Class ##
+## <a name="DCC"></a>The DCC Class ##
 This is the main class to receive and analyse DCC messages. It has three methods: `attach()`, `detach()` and `input()`.
 
 #### void attach(uint8_t dccPin, uint8_t ackPin=255) ####
@@ -113,7 +113,7 @@ The broadcast outputAddress is 2047.
 
 ___
 
-## The LOCO Class ##
+## <a name="LOCO"></a>The LOCO Class ##
 
 #### void setMyAddress(unsigned int first, unsigned int last = 65535) ####
 In the main sketch `setup()` should call `setMyAddress`, to initialise the Loco object with the range of loco addresses it will listen to. If the call includes a single parameter, that parameter represents the (single) loco address this decoder will listen to. If the call includes two parameters, these parameters represent the range of loco addresses this decoder will listen to.
@@ -142,7 +142,7 @@ uint8_t      F61F68;               // 0..255. Least significant bit is F61
 ````
 ----
 
-## The CvAccess Class ##
+## <a name="CvAccess"></a>The CvAccess Class ##
 The behaviour of the decoder is determined by the setting of certain Configuration Variables (CVs) Commands to access these variables can be send in Service Mode (SM = Programming Track) or in Programming on the Main (PoM) mode. This decoder supports both modes.
 
 According to S-9.2.1, PoM supports 2 methods to access Configuration Variables (CVs): Short form and Long form. Of these, only the long form is implemented by this Library
