@@ -1,4 +1,4 @@
-# <a name="AP_DCC_Library"></a>AP_DCC_Library #
+# <a name="AP_DCC_library"></a>AP_DCC_library #
 
 This Arduino library decodes (NMRA) Digital Command Control (DCC) messages. It is primarily intended for accessory Decoders and runs on ATMega processors.
 
@@ -7,7 +7,7 @@ Like the NmraDcc library, this library runs on ATMega processors, such as the AT
 
 ___
 
-## <a name="DCC"></a>The DCC Class ##
+## <a name="Dcc"></a>The Dcc Class ##
 This is the main class to receive and analyse DCC messages. It has three methods: `attach()`, `detach()` and `input()`.
 
 #### void attach(uint8_t dccPin, uint8_t ackPin=255) ####
@@ -55,7 +55,7 @@ Create a 6ms DCC ACK signal, which is needed for Service Mode programming.
 
 ___
 
-## <a name="ACCESSORY"></a>The ACCESSORY Class ##
+## <a name="Accessory"></a>The Accessory Class ##
 
 The NMRA Standard 9.2.1 and RCN-213 define two types of accessory commands:
 1. Basic accessory command, used for switches and similar
@@ -113,7 +113,7 @@ The broadcast outputAddress is 2047.
 
 ___
 
-## <a name="LOCO"></a>The LOCO Class ##
+## <a name="Loco"></a>The Loco Class ##
 
 #### void setMyAddress(unsigned int first, unsigned int last = 65535) ####
 In the main sketch `setup()` should call `setMyAddress`, to initialise the Loco object with the range of loco addresses it will listen to. If the call includes a single parameter, that parameter represents the (single) loco address this decoder will listen to. If the call includes two parameters, these parameters represent the range of loco addresses this decoder will listen to.
