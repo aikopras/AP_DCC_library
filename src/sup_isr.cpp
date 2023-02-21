@@ -9,7 +9,7 @@
 //
 // This version of the software runs only on ATmega processors, and not on (for example) the ESP32
 //
-// For traditional ATmega processors, such as used on the Arduino UNO and MEGA boards, we use an 
+// For traditional ATmega processors, such as used on the Arduino UNO and MEGA boards, we use an
 // approach where a change of the DCC input signal triggers an ISR. The ISR sets a timer to 77us,
 // and once the timer fires the DCC input pin's value is read to determine if we have a 0 or a 1.
 // See sup_isr_Mega.h for details
@@ -21,9 +21,9 @@
 // conform to the timing requirements as defined by the Rail Community (RCN-210)/
 // To exploit these, the MegaCoreX or DxCore boards should be installed by the ARduino IDE:
 // https://github.com/MCUdude/MegaCoreX
-// https://github.com/SpenceKonde/DxCore 
+// https://github.com/SpenceKonde/DxCore
 // See sup_isr_MegaCoreX_DxCore.h for details
-//  
+//
 // If the ATMegaX 4809 processor is used on an Arduino Nano Every, but instead of the MegaCoreX board
 // the 'standard' Arduino megaAVR board has been selected in the Arduino IDE, a similar decoding
 // approach is used as with the traditional ATmega processors: a change of the DCC input signal
@@ -37,15 +37,17 @@
 #if defined(__AVR_MEGA__)
   // Only runs on Atmega (AVR) processors
   #if defined(__AVR_XMEGA__)
-    // These are the new megaAVR 0, AVR DA and AVR DB processors
-    // Examples are: ATmega4808, 4809, AVR128DA and AVR128DB 
-      #if defined(__AVR_DA__) || defined(__AVR_DB__) || defined(MEGACOREX)
-        // Compiled and built using the MegaCoreX or DxCore boards
-       #include "sup_isr_MegaCoreX_DxCore.h"
-      #else
-        // This is possibly the Arduino Nano Every, using an Arduino megaAVR board 
-        #include "sup_isr_Nano_Every.h"
-      #endif
+    // These are the new megaAVR 0, AVR DA, DB, DD (EA) and and MegaTiny processors
+    #if defined (ARDUINO_AVR_NANO_EVERY)
+      // This is the Arduino Nano Every, using an Arduino megaAVR board
+      #include "sup_isr_Nano_Every.h"
+      #elif defined(MEGACOREX)
+        // megaAVR 0 but not NanoEvery
+        #include "sup_isr_MegaCoreX_DxCore.h"
+      #elif defined(_AVR_FAMILY)
+        //AVR DA DB DD (EA) or MegaTiny CPU Core
+        #include "sup_isr_MegaCoreX_DxCore.h"
+    #endif   
   #else
     // These are the traditional ATmega processors
     // Examples are ATmega16A, 328 and 2560
