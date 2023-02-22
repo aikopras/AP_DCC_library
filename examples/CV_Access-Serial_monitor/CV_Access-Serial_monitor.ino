@@ -40,11 +40,23 @@ extern CvAccess cvCmd;           // To retrieve the data from pom and sm command
 
 // For test purposes, define an array with configuration variables
 // Note that array numbering starts from 0, and CV numbering from 1
-uint8_t myCvs[] = {1,2,3,4,5,6,7,8,9};
+uint8_t myCvs[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30};
 
 // Define constants to differentiate between SM and PoM
 const uint8_t SM = 1;
 const uint8_t PoM = 2;
+
+
+void writeBinary(const uint8_t value) {
+  Serial.print((value & 0b10000000) >> 7);
+  Serial.print((value & 0b01000000) >> 6);
+  Serial.print((value & 0b00100000) >> 5);
+  Serial.print((value & 0b00010000) >> 4);
+  Serial.print((value & 0b00001000) >> 3);
+  Serial.print((value & 0b00000100) >> 2);
+  Serial.print((value & 0b00000010) >> 1);
+  Serial.print( value & 0b00000001);
+}
 
 
 void setup() {
@@ -68,8 +80,12 @@ void cv_operation(const uint8_t op_mode) {
   Serial.println(cvCmd.value);
   // Ensure we stay within the CV array bounds
   if (index < sizeof(myCvs)) {
-    Serial.print("Old CV value = ");
-    Serial.println(myCvs[index]);
+    Serial.print("CV value stored in decoder = ");
+    Serial.print(myCvs[index]);
+    Serial.print(" (");
+    writeBinary(myCvs[index]);
+    Serial.println(")");
+
     switch(cvCmd.operation) {
 
       case CvAccess::verifyByte :
@@ -88,22 +104,24 @@ void cv_operation(const uint8_t op_mode) {
       break;
 
       case CvAccess::bitManipulation :
-        Serial.print("Bit Manupulation");
-        Serial.print(", Bitposition = ");  Serial.print(cvCmd.bitposition);
-        Serial.print(", Bitvalue = ");     Serial.println(cvCmd.bitvalue);
+
         if (cvCmd.writecmd) {
-          Serial.print("Write Command");
+          Serial.print("Bit Manupulation - Write Command");
+          Serial.print(", Bitposition = ");  Serial.print(cvCmd.bitposition);
+          Serial.print(", Bitvalue = ");     Serial.println(cvCmd.bitvalue);
           myCvs[index] = cvCmd.writeBit(myCvs[index]);
           Serial.print(". New CV value = "); Serial.println(myCvs[index]);
           if (op_mode == SM) dcc.sendAck();
         }
         else { // verify bit
-          Serial.print("Verify Command");
+          Serial.print("Bit Manupulation - Verify Command");
+          Serial.print(", Bitposition = ");  Serial.print(cvCmd.bitposition);
+          Serial.print(", Bitvalue = ");     Serial.println(cvCmd.bitvalue);
           if (cvCmd.verifyBit(myCvs[index])) {
-            Serial.print(". Bits are equal");
+            Serial.print("Bits are equal");
             if (op_mode == SM) dcc.sendAck();
           }
-          else Serial.print(". Bits are unequal");
+          else Serial.print("Bits are unequal");
         }
         Serial.println();
       break;

@@ -210,8 +210,8 @@ Dcc::CmdType_t CvMessage::analyseSM(void) {
           // K = 0 verify, K = 1 write
           // D = value
           // BBB = bitposition
-          cvCmd.writecmd    = byte3 & 0b00010000;
-          cvCmd.bitvalue    = byte3 & 0b00001000;
+          cvCmd.writecmd    = (byte3 & 0b00010000) >> 4;
+          cvCmd.bitvalue    = (byte3 & 0b00001000) >> 3;
           cvCmd.bitposition = byte3 & 0b00000111;
         }
         return(Dcc::SmCmd);
@@ -254,8 +254,8 @@ Dcc::CmdType_t CvMessage::analysePoM(void) {
       // K = 0 verify, K = 1 write
       // D = value
       // BBB = bitposition
-      cvCmd.writecmd    = byte3 & 0b00010000;
-      cvCmd.bitvalue    = byte3 & 0b00001000;
+      cvCmd.writecmd    = (byte3 & 0b00010000) >> 4;
+      cvCmd.bitvalue    = (byte3 & 0b00001000) >> 3;
       cvCmd.bitposition = byte3 & 0b00000111;
     }    
     return(Dcc::MyPomCmd);
