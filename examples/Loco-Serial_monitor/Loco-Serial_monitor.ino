@@ -30,7 +30,13 @@
 #include <Arduino.h>
 #include <AP_DCC_library.h>
 
-const uint8_t dccPin = 3;        // Pin 3 on the UNO, Nano etc. is INT1
+#define LocoAddress 5000
+const uint8_t dccPin = 3;         // Pin 3 on the UNO, Nano etc. is INT1
+                                  // Pin 20 (PIN_PD1) on the ATMega2560 is INT1
+
+//******************************************************************************************************
+//                                  No need to edit below
+//******************************************************************************************************
 
 extern Dcc dcc;                  // This object is instantiated in DCC_Library.cpp
 extern Loco locoCmd;             // To retrieve the data from loco commands  (7 & 14 bit)
@@ -46,7 +52,7 @@ void setup() {
   dcc.attach(dccPin);
   pinMode(LED_BUILTIN, OUTPUT);
   // Set Loco address. We may also specify an address range.
-  locoCmd.setMyAddress(5000);
+  locoCmd.setMyAddress(LocoAddress);
 }
 
 
