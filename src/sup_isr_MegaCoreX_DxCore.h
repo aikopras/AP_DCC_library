@@ -5,6 +5,9 @@
 //           using a MegaCoreX or DxCore board
 // author:   Aiko Pras
 // version:  2021-09-01 V1.2.0 ap - Uses the Event system to connect the DCC input pin to a TCB timer.
+//           2024-06-04 V1.2.1 ap - Error corrected in cases where the preamble had an uneven number
+//                                  of halfbits. This error showed up with DxCore and the Z21 system.
+//                                  Some comments are added for implementing RailCom feedback.
 //
 // Result:   1. The received message is collected in the struct "dccrec.tempMessage".
 //           2. After receiving a complete message, data is copied to "dccMessage.data".
@@ -43,11 +46,12 @@
 // https://github.com/MCUdude/MegaCoreX#event-system-evsys
 // https://github.com/SpenceKonde/DxCore 
 //
-// Note: Railcom has not been implemented.
-// Implementation would be relatively easy by using an additional timer to determine the exact moment
-// the railcom data should be set. This railcom timer is reset whenever the DCC decoding timer fires.
-// If the railcom timer fires, a UART is started to send the railcom data. The Event and CCL
-// peripherals are used to connect the DCC input pin, both timers as well as the UART.
+// Note: Railcom feedback has not been implemented.
+// Implementation could be relatively easy by using an additional timer to determine the exact moment
+// the railcom data should be send. This moment could be the moment that the Packet End Bit is detected
+// (see sup_isr_assemble_packet.h). Once this railcom timer fires, a UART starts sending the railcom
+// data. The Event and CCL peripherals can be used to connect the RailCom timer with the UART and the
+// RailCom output pin.
 //
 //******************************************************************************************************
 #include <Arduino.h>
@@ -176,8 +180,7 @@ void DccMessage::initTcb(void) {
 
 
 void DccMessage::initEventSystem(uint8_t dccPin) {
-  // Note: this code uses the new Event Library of MegaCoreX
-  // This Library has not (yet) been copied to the DxCore
+  // Note: this code uses the new Event Library of MegaCoreX / DxCore
   noInterrupts();
   Event& myEvent = Event::assign_generator_pin(dccPin);
   #if defined(DCC_USES_TIMERB0)
@@ -268,7 +271,7 @@ void DccMessage::detach(void) {
       dccHalfBit = EXPECT_ONE;
       return;
     }
-    else {                                             // We expected a 1, but received 0 => abort
+    else {                                             // We expected a 0, but received 1 => abort
       timer_EVCTRL ^= TCB_EDGE_bm;                     // Likely J/K should be changed
       dccHalfBit = EXPECT_ANYTHING;
       dccrecState = WAIT_PREAMBLE;
@@ -285,16 +288,34 @@ void DccMessage::detach(void) {
       dccHalfBit = EXPECT_ZERO;
       return;
     }
-    else {                                             // We expected a 0, but received 1 => abort
-      dccHalfBit = EXPECT_ANYTHING;
-      dccrecState = WAIT_PREAMBLE;
-      dccrec.bitCount = 0;
-      return;
+    else {                                             // We expected a 1, but received 0
+      // Modified 2024/06/03 to correct an issue with the Z21 command station, which could
+      // send, depending of the polarity of J and K, an uneven number of preamble half bits.
+      // So we received a 0-halfbit, although we expected the second part of a 1-halfbit.
+      // This can happen if the preamble has an uneven number of 1-halfbits, for example after
+      // a RailCom CutOut. In such case this would be the first half of the Packet Start-bit
+      if (dccrecState & WAIT_START_BIT) {              // are we still in the preamble?
+        dccHalfBit = EXPECT_ZERO;
+        return;
+      }
+      else {                                           // This should not happen.
+        dccHalfBit = EXPECT_ANYTHING;
+        dccrecState = WAIT_PREAMBLE;
+        dccrec.bitCount = 0;
+        return;
+      }
     }
   }
   else {
     // We ignore other halfbits, to avoid interference with orther protocols.
-    // In case railcom would be implemented, here we could detect the cutout start (26..32us)
+    //
+    // Here we may detect the RailCom cutout period (see RCN-217), to test if the command station
+    // has activated RailCom.
+    // Note that, if the DCC signal is connected to the decoder via a single optocoupler (such as 6N137),
+    // the Cutout Start bit (of 26..32us) may or may not be seen by the microcontroller (= this
+    // software), depending on the polarity of the DCC signal.
+    // Therefore the best moment to start a RailCom timer is likely the piece of code where the
+    // Packet End Bit is detected (in sup_isr_assemble_packet.h)
     return;
   }
     

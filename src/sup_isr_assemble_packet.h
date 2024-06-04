@@ -77,6 +77,9 @@
     if( DccBitVal ) // End of packet?
     {
       // Complete packet received and no errors
+      // If somewhere in the future Railcom feedback will be implemented, this could be
+      // the place to start a timer that determines the exact moment a UART should start
+      // sending the RailCom feedback data.
       uint8_t i;
       uint8_t bytes_received;
       bytes_received = dccrec.tempMessageSize;
