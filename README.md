@@ -63,7 +63,7 @@ The NMRA Standard 9.2.1 and RCN-213 define two types of accessory commands:
 
 #### Command_t command: (basic..extended) ####
 The `command` attribute indicates whether a basic or an extended accessory command was received.
-All command stations can generate basic accessory commands, but only a few support extended accessory commands. The LENZ LZV101 (with Xpressnet V3.6) for example can't, but the OpenDCC command station can generate extended accessory commands.
+All command stations can generate basic accessory commands, but only a few support extended accessory commands. For example, current LENZ Command Stations (LZV100, LZV200) can't, but the OpenDCC, Z21 and Yamorc command stations can generate extended accessory commands.
 
 Commands for accessory decoders contain fields that can be interpreted in different ways, depending on the specific decoder that is being implemented.
 
@@ -106,7 +106,7 @@ An Accessory Decoder may listen to one or multiple decoder addresses, for exampl
 
 
 #### uint8_t myMaster = Lenz; ####
-Different command station manufacturers made different choices regarding the exact coding of the address bits within the DCC packet. See "support_accessory.cpp" for details. In many cases these differences can be neglected, unless the decoder address will also be used for other purposes, such as calculating CV values, or generating feedback / POM addresses. The `myMaster` attribute may be set by setup() of the main sketch to  `Lenz` (1), `OpenDcc` (2) or `Roco` (0) to deal with different command station behaviour. The default value is `Lenz`.
+Different command station manufacturers made different choices regarding the exact coding of the address bits within the DCC packet. See "support_accessory.cpp" for details. In many cases these differences can be neglected, unless the decoder address will also be used for other purposes, such as calculating CV values, or generating feedback / POM addresses. The `myMaster` attribute may be set by setup() of the main sketch to  `Lenz` (1), `OpenDcc` (2) or `Roco` Multimaus (0) to deal with different command station behaviour. For historical reasons the library's default value is `Lenz`. However, `OpenDcc` will in many cases be the better choice, since that behaviour, is according to RCN213, the preferred behaviour, and also implemented the Z21 and YAMORC command stations.
 
 #### _Broadcast Address_ ####
 The broadcast outputAddress is 2047.
@@ -209,6 +209,7 @@ void setup() {
   // we display details for all decoders with addresses between 1 and 100.
   // Note: One decoder address supports 4 switches   
   accCmd.setMyAddress(1, 100);    // Decoder 100 is switch 397..400
+  accCmd.myMaster = OpenDCC;      // Switch addresses according to RCN213 
   delay(1000);
   Serial.println("Test DCC lib");
 }

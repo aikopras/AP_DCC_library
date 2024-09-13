@@ -28,7 +28,7 @@
 #include <Arduino.h>
 #include <AP_DCC_library.h>
 
-const uint8_t dccPin = 3;        // Pin 3 on the UNO, Nano etc. is INT1
+const uint8_t dccPin = 3;        // Pin 3 on the UNO, Nano etc. is INT1 / PIN_PD1 is INT1 and Digital Pin 20 on the ATMega2560
 
 extern Dcc dcc;                  // This object is instantiated in DCC_Library.cpp
 extern Accessory accCmd;         // To retrieve data from accessory commands
@@ -39,11 +39,15 @@ void setup() {
   delay(1000);
   Serial.println("Test DCC lib - Accesory Commands");
   dcc.attach(dccPin);
+  
   // For testing, the following variables can be changed
-  accCmd.myMaster = Lenz;
+  accCmd.myMaster = OpenDCC;
+  //accCmd.myMaster = Lenz;
+  
   // Set Accessory address. We may also specify an address range.
   // Note: my decoder address = output (switch) address / 4
-  accCmd.setMyAddress(24);    // Decoder 24 is switch 97..100
+  //accCmd.setMyAddress(24);    // Decoder 24 is switch 97..100
+  accCmd.setMyAddress(0,511);   // We listen to all addresses!
 }
 
 
@@ -52,18 +56,26 @@ void loop() {
     switch (dcc.cmdType) {
 
       case Dcc::MyAccessoryCmd :
-        if (accCmd.command == Accessory::basic)
-          Serial.print(" Basic accessory command for my decoder address: ");
-          else Serial.print(" Extended accessory command for my decoder address: ");
-        Serial.println(accCmd.decoderAddress);
-        Serial.print(" - Turnout: ");
-        Serial.println(accCmd.turnout);
-        Serial.print(" - Switch number: ");
-        Serial.print(accCmd.outputAddress);
-        if (accCmd.position == 1) Serial.println(" +");
-          else Serial.println(" -");
-        if (accCmd.activate) Serial.println(" - Activate");
-        Serial.println();
+        if (accCmd.command == Accessory::basic) {
+          Serial.println(" Basic accessory command for my decoder");
+          Serial.print(" - Decoder Address: ");
+          Serial.println(accCmd.decoderAddress);
+          Serial.print(" - Turnout: ");
+          Serial.println(accCmd.turnout);
+          Serial.print(" - Switch number: ");
+          Serial.print(accCmd.outputAddress);
+          if (accCmd.position == 1) Serial.println(" +");
+            else Serial.println(" -");
+          if (accCmd.activate) Serial.println(" - Activate");
+          Serial.println();
+        }
+        else {
+          Serial.println(" Extended accessory command for my decoder");
+          Serial.print(" - Output Address: ");
+          Serial.println(accCmd.outputAddress);
+          Serial.print(" - SignalHead: ");
+          Serial.println(accCmd.signalHead);
+       }
       break;
 
       case Dcc::AnyAccessoryCmd :

@@ -5,6 +5,8 @@
 // author:    Aiko Pras
 // version:   2021-05-15 V1.0.2 ap initial version
 //            2022-02-22 V1.0.3 ap Corrected retransmission test, to include decoderAddress_old
+//            2024-09-13 V1.0.4 ap Corrected the last four addresses: between 2045-2048
+//                                 Tested Extended packets
 //
 // This source file is subject of the GNU general public license 3,
 // that is available at the world-wide-web at http://www.gnu.org/licenses/gpl.txt
@@ -65,9 +67,10 @@
 // 2) The TT address bits within the DCC message get value "1"        (1000-0000 1111-C01P XXXX-XXXX)
 // 3) The LSB address bits within the DCC message get value "1"       (1000-0001 1111-C00P XXXX-XXXX)
 // As could be expected, different command stations implement different strategies:
-// - The Roco 10764  command station uses the first strategy
-// - The LENZ LZV100 command station (with XpressNet V3.6) use the third strategy
-// - The OpenDCC Z1  command station (with XpressNet V3.6) use the third strategy
+// - The Roco Multimaus / 10764 command station uses the first strategy
+// - The LENZ LZV100            command station (with XpressNet V3.6) use the third strategy
+// - The OpenDCC Z1             command station (with XpressNet V3.6) use the third strategy
+// - The Yamorc YD7001          command station (with XpressNet V4) use the third strategy
 //
 // The RCN213 describes these differences in more detail and states:
 // - "Aus Gründen der Kompatibilität zu existierenden Zentralen ist die erste angesprochene Adresse
@@ -114,9 +117,11 @@
 //
 
 // In this software we introduce the "myMaster" attribute to allow the main sketch to select between:
-// - OpenDCC: strategy 3 
+// - OpenDCC: strategy 3.
 // - Lenz: strategy 3 but compensation for handheld addresses around multiples of 256 
-// - Roco: strategy 1 (standard) and strategy 3 (lenz) command stations.  
+// - Roco: strategy 1 (standard) and strategy 3 (lenz) command stations.
+// Note that OpenDCC conforms to RCN213, and should be selected for many other
+// command stations, such as the Yamorc YD6001.
 //
 // Within the accessory decoder we distinguish between:
 // - decoderAddress (0..511): MSB + LSB (plus some compensation in case of LENZ systems)
@@ -197,6 +202,8 @@ Dcc::CmdType_t AccMessage::analyse(void) {
       break;
     default:
       accCmd.decoderAddress = msb + lsb - 1;
+      // For the last decoder address (=511): msb and lsb are coded as 0
+      if (accCmd.decoderAddress == 65535) {accCmd.decoderAddress = 511;}
       break;
   }
   //
