@@ -96,7 +96,7 @@ void loop() {
       break;
 
       case Dcc::MyLocoF5F8Cmd:
-        Serial.print("F5-F5 command. Value: ");
+        Serial.print("F5-F8 command. Value: ");
         Serial.println(locoCmd.F5F8);
       break;
 
