@@ -4,6 +4,7 @@
 // purpose:   DCC library for ATmega AVRs (16, 328, 2560, ...)
 // author:    Aiko Pras
 // version:   2021-05-15 V1.0.2 ap initial version
+//            2024-12-11 V1.0.3 ap comments improved for "position" attribute
 //
 // history:   This is a further development of the OpenDecoder 2 software, as developed by W. Kufer.
 //            It has been rewritten such that it can be used for Arduino (Atmel AVR) environments.
@@ -186,7 +187,7 @@ class Accessory {
     unsigned int outputAddress;          // 1..2048 - The address of an individual switch or signal
     uint8_t device;                      // 1..8    - For on/off devices, such as relays
     uint8_t turnout;                     // 1..4    - For switches, which have two states (coils / servo's)
-    uint8_t position;                    // 0..1    - The turnout position (straight-curved, green-red, -/+)
+    uint8_t position;                    // 0..1    - The turnout position (0 = curved / red / - ; 1 = straight / green / +)
     uint8_t activate;                    // 0..1    - If the relay or coil should be activated or deactivated
     uint8_t signalHead;                  // 0..255  - In case of an extended accessory command, the signal's value
 };
