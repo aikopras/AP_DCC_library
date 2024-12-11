@@ -83,7 +83,7 @@ The `turnout` attribute tells which of the four switches is being targeted.
 Instead of addressing decoders (that connect multiple switches), it is also possible to directly address individual switches or other outputs (relays, signals, turntables etc). Output addresses are 11 bits in length, and consists basically of the concatenation of the `decoderAddress` and the `switch` attributes.
 
 #### uint8_t position: (0..1) (basic) ####
-Most switches can be positioned via two coils or servos. The "position" attribute tells which of the two coils is being targetted. Unfortunately different command stations made different choices regarding the interpretation of 0 or 1. According to RCN-213, a value 0 is used for "diverging"  tracks (red), whereas the value 1 is used for "straight" tracks (green). Some command stations use '-' for 0, or '+' for 1 to indicate the position.
+Most switches can be positioned via two coils or servos. The "position" attribute tells which of the two coils is being targetted. Unfortunately different command stations made different choices regarding the interpretation of 0 or 1. According to RCN-213, a value 0 is used for "diverging"  tracks (red), whereas the value 1 is used for "straight" tracks (green). The Lenz LH 100 uses '-' for 0, or '+' for 1 to indicate the switch position.
 
 #### uint8_t device: (1..8) (basic) ####
 In case of relays or other on/off devices usage of the `turnout` and `position` attributes may seem artificial. In such cases the `device` attribute may be used instead.
