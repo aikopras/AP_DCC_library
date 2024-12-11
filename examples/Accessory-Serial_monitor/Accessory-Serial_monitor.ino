@@ -6,6 +6,7 @@
 //            Results are displayed on the serial monitor
 // author:    Aiko Pras
 // version:   2021-06-01 V1.0 ap initial version
+//            2024-12-11 V1.1 ap clarification of the switch position
 //
 // usage:     This sketch should declare the following objects:
 //            - extern Dcc           dcc;     // The main DCC object
@@ -64,8 +65,8 @@ void loop() {
           Serial.println(accCmd.turnout);
           Serial.print(" - Switch number: ");
           Serial.print(accCmd.outputAddress);
-          if (accCmd.position == 1) Serial.println(" +");
-            else Serial.println(" -");
+          if (accCmd.position == 1) Serial.println(" 1");  // 1 = Straight / Green / LH10X: +
+            else Serial.println(" 0");                     // 0 = Diverging / Red / LH10X: -
           if (accCmd.activate) Serial.println(" - Activate");
           Serial.println();
         }
