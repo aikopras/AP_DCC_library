@@ -24,7 +24,7 @@
     // that has less then 10 complete one bits
     if( DccBitVal )                                   // a "1" bit is received
     {
-      if( dccrec.bitCount > 10 )
+      if( dccrec.bitCount >= 10 )
         dccrecState = WAIT_START_BIT;
     }
     else
