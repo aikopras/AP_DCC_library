@@ -1,6 +1,6 @@
-# <a name="AP_DCC_library"></a>AP_DCC_library #
+# <a name="AP_DCC_library "></a>AP_DCC_library #
 
-This Arduino library decodes (NMRA) Digital Command Control (DCC) messages. It is primarily intended for accessory Decoders and runs on ATMega processors.
+This Arduino library decodes (NMRA) Digital Command Control (DCC) messages. It is primarily intended for accessory Decoders and runs on ATMega processors. A Railcom Trigger was added to enable Railcom Detection.
 
 ## Relation to the NmraDcc library ##
 Like the NmraDcc library, this library runs on ATMega processors, such as the ATMega 328, which is used on the Arduino UNO board. Whereas the NmraDcc library also runs on other microcontrollers, such as the ESP-32 and the Raspberry Pi Pico, this library only runs ATMega processors. However, on newer ATMega processors, such as the 4809 (Arduino Nano Every, MegaCoreX) and the AVR128DA (DxCore), this library provides better performance and reliability. In addition, it is believed that this library is better structured and documented, making modifications easier. See [History and Differences](extras/History_Differences.md) to understand the motivation why this library has been developed and how it compares to the NmraDcc library.
