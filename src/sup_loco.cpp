@@ -51,6 +51,11 @@ void LocoMessage::reset_speed(void) {
   locoCmd.F9F12 = 0;
   locoCmd.F13F20 = 0;
   locoCmd.F21F28 = 0;
+  locoCmd.F29F36 = 0;
+  locoCmd.F37F44 = 0;
+  locoCmd.F45F52 = 0;
+  locoCmd.F53F60 = 0;
+  locoCmd.F61F68 = 0;
 }
 
 
