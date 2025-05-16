@@ -111,6 +111,7 @@ void LocoMessage::reset_speed(void) {
   locoCmd.F45F52 = 0;
   locoCmd.F53F60 = 0;
   locoCmd.F61F68 = 0;
+  locoCmd.F29_F68 = 0;
   locoCmd.binaryStateNumber = 0;
   locoCmd.binaryStateValue = false;
 }
@@ -355,10 +356,10 @@ Dcc::CmdType_t LocoMessage::analyse(void) {
   if ((instructionByte == 0b11011101) || (instructionByte == 0b11000000)) {
     // Step 9A: Set two temporary variables: stateNumber (0..32767) and stateValue (On or Off)
     uint16_t stateNumber;
-    boolean stateValue;
+    bool stateValue;
     if (locoCmd.longAddress) {
       if (instructionByte == 0b11000000) {    // long address and long form: use data[3] and data[4]
-        stateNumber = dccMessage.data[3] & 0b01111111 + dccMessage.data[4] * 256;
+        stateNumber = (dccMessage.data[3]) & (0b01111111 + dccMessage.data[4] * 256);
         stateValue  = dccMessage.data[3] & 0b10000000;
         }
       else {                                  // long address and short form: use data[3]
@@ -368,7 +369,7 @@ Dcc::CmdType_t LocoMessage::analyse(void) {
     }
     else {
       if (instructionByte == 0b11000000) {    // short address and long form: use data[2] and data[3]
-        stateNumber = dccMessage.data[2] & 0b01111111 + dccMessage.data[3] * 256;
+        stateNumber = (dccMessage.data[2] & 0b01111111) + (dccMessage.data[3] * 256);
         stateValue  = dccMessage.data[2] & 0b10000000;
       }  
       else {                                  // short address and short form: use data[2]

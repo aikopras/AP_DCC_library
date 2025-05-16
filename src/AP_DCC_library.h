@@ -232,6 +232,9 @@ class Loco {
         uint8_t  F45F52;               // 0..255. Least significant bit is F45
         uint8_t  F53F60;               // 0..255. Least significant bit is F53
         uint8_t  F61F68;               // 0..255. Least significant bit is F61
+        uint8_t  F69F76;               // Is not (yet?) defined in RCN212
+        uint8_t  F77F84;               // Is not (yet?) defined in RCN212
+        uint8_t  F85F92;               // Is not (yet?) defined in RCN212
       };  
     };  
     uint16_t     binaryStateNumber;    // 69..32767
