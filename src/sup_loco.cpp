@@ -111,11 +111,8 @@ void LocoMessage::reset_speed(void) {
   locoCmd.F45F52 = 0;
   locoCmd.F53F60 = 0;
   locoCmd.F61F68 = 0;
-<<<<<<< HEAD
   locoCmd.binaryStateNumber = 0;
   locoCmd.binaryStateValue = false;
-=======
->>>>>>> 649d387ef0bc71e5396fa224d1f647466d823fc8
 }
 
 
