@@ -1,5 +1,5 @@
 #########################################
-# Syntax Coloring Map For AP_DCC_library 
+# Syntax Coloring Map For AP_DCC_library
 #########################################
 
 #########################################
@@ -36,6 +36,8 @@ MyLocoF37F44Cmd			KEYWORD2
 MyLocoF45F52Cmd			KEYWORD2
 MyLocoF53F60Cmd			KEYWORD2
 MyLocoF61F68Cmd			KEYWORD2
+MyBinaryStateCmd    KEYWORD2
+MyBinaryStateResetCmd KEYWORD2
 AnyAccessoryCmd			KEYWORD2
 MyAccessoryCmd			KEYWORD2
 MyPomCmd			KEYWORD2
@@ -67,7 +69,8 @@ F37F44				KEYWORD2
 F45F52				KEYWORD2
 F53F60				KEYWORD2
 F61F68				KEYWORD2
-
+binaryStateNumber KEYWORD2
+binaryStateValue KEYWORD2
 operation			KEYWORD2
 number				KEYWORD2
 value				KEYWORD2
