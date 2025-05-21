@@ -6,6 +6,7 @@
 //            Results are displayed on the serial monitor
 // author:    Aiko Pras
 // version:   2021-06-01 V1.0 ap initial version
+//            2025-05-15 V1.1 ap F29-F68 and Binary State added 
 //
 // usage:     This sketch should declare the following objects:
 //            - extern Dcc           dcc;     // The main DCC object
@@ -96,7 +97,7 @@ void loop() {
       break;
 
       case Dcc::MyLocoF5F8Cmd:
-        Serial.print("F5-F8 command. Value: ");
+        Serial.print("F5-F5 command. Value: ");
         Serial.println(locoCmd.F5F8);
       break;
 
@@ -113,6 +114,42 @@ void loop() {
       case Dcc::MyLocoF21F28Cmd:
         Serial.print("F21-F28 command. Value: ");
         Serial.println(locoCmd.F21F28);
+      break;
+      
+      case Dcc::MyLocoF29F36Cmd:
+        Serial.print("F29-F36 command. Value: ");
+        Serial.println(locoCmd.F29F36);
+      break;
+
+      case Dcc::MyLocoF37F44Cmd:
+        Serial.print("F37-F44 command. Value: ");
+        Serial.println(locoCmd.F37F44);
+      break;
+
+      case Dcc::MyLocoF45F52Cmd:
+        Serial.print("F45-F52 command. Value: ");
+        Serial.println(locoCmd.F45F52);
+      break;   
+ 
+      case Dcc::MyLocoF53F60Cmd:
+        Serial.print("F53-F60 command. Value: ");
+        Serial.println(locoCmd.F53F60);
+      break;
+ 
+      case Dcc::MyLocoF61F68Cmd:
+        Serial.print("F61-F68 command. Value: ");
+        Serial.println(locoCmd.F61F68);
+      break;
+
+      case Dcc::MyBinaryStateCmd:
+        Serial.print("Binary State command. Number: ");
+        Serial.print(locoCmd.binaryStateNumber);
+        Serial.print(". On: ");
+        Serial.println(locoCmd.binaryStateValue); 
+      break;
+
+      case Dcc::MyBinaryStateResetCmd:
+        Serial.println("Binary State Reset command.");
       break;
 
       default:
