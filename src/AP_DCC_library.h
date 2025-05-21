@@ -5,6 +5,7 @@
 // author:    Aiko Pras
 // version:   2021-05-15 V1.0.2 ap initial version
 //            2024-12-11 V1.0.3 ap comments improved for "position" attribute
+//            2025-05-12 V1.1.0 ap/lr binaryStates are now supported (RCN-212: Sections 2.3.5 & 2.3.6)
 //
 // history:   This is a further development of the OpenDecoder 2 software, as developed by W. Kufer.
 //            It has been rewritten such that it can be used for Arduino (Atmel AVR) environments.
@@ -68,6 +69,8 @@ class Dcc {
       MyLocoF45F52Cmd,                           // F45..F52 command, for this decoder address(es)
       MyLocoF53F60Cmd,                           // F53..F60 command, for this decoder address(es)
       MyLocoF61F68Cmd,                           // F61..F68 command, for this decoder address(es)
+      MyBinaryStateCmd,                          // Binary State command, for this decoder address(es)
+      MyBinaryStateResetCmd,                     // Binary State command, for this decoder address(es)
       AnyAccessoryCmd,                           // Accessory command, but not for this decoder address(es)
       MyAccessoryCmd,                            // Accessory command, for this decoder address(es)
       MyPomCmd,                                  // Programming on the Main (PoM)
@@ -203,9 +206,6 @@ class Accessory {
 // decoder will listen to.
 //
 // We analyse most commands, but no attempt is made to be complete.
-// The focus is on those commands that may be useful for accesory decoders, that  listen to some
-// loco commands to facilitate PoM. In addition, some functions are included that may be usefull for
-// safety decoders as well as function decoders (for switchin lights within couches).
 //
 //******************************************************************************************************
 class Loco {
@@ -224,11 +224,21 @@ class Loco {
     uint8_t      F9F12;                // 0..15. Least significant bit is F9
     uint8_t      F13F20;               // 0..255. Least significant bit is F13
     uint8_t      F21F28;               // 0..255. Least significant bit is F21
-    uint8_t      F29F36;               // 0..255. Least significant bit is F29
-    uint8_t      F37F44;               // 0..255. Least significant bit is F37
-    uint8_t      F45F52;               // 0..255. Least significant bit is F45
-    uint8_t      F53F60;               // 0..255. Least significant bit is F53
-    uint8_t      F61F68;               // 0..255. Least significant bit is F61
+    union {
+      uint64_t   F29_F68;              // 64 bits. Bit0=F29, Bit7=F36, Bit8=F37, Bit39=F68 
+      struct {                         // First byte is F29F36, second is F37F44
+        uint8_t  F29F36;               // 0..255. Least significant bit is F29
+        uint8_t  F37F44;               // 0..255. Least significant bit is F37
+        uint8_t  F45F52;               // 0..255. Least significant bit is F45
+        uint8_t  F53F60;               // 0..255. Least significant bit is F53
+        uint8_t  F61F68;               // 0..255. Least significant bit is F61
+        uint8_t  F69F76;               // Is not (yet?) defined in RCN212
+        uint8_t  F77F84;               // Is not (yet?) defined in RCN212
+        uint8_t  F85F92;               // Is not (yet?) defined in RCN212
+      };  
+    };  
+    uint16_t     binaryStateNumber;    // 69..32767
+    bool         binaryStateValue;     // On or Off
 };
 
 
