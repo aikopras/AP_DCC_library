@@ -388,6 +388,7 @@ Dcc::CmdType_t LocoMessage::analyse(void) {
     // - 16 ... 28: reserved
     // - 29 ... 68: F29-F68
     // -      > 68: determined by the application that uses this library
+    uint64_t old_F29_F68 = locoCmd.F29_F68;  // Needed to avoid compiler warnings
     switch (stateNumber) {
       case 0:
         if (stateValue) locoCmd.F29_F68 = 0xFFFFFFFFFF;   // Set F29 till F28 (5 bytes)
@@ -402,8 +403,8 @@ Dcc::CmdType_t LocoMessage::analyse(void) {
         // To enable immediate access to the five Function bytes (F29F36, F37F44, F45F52, F53F60, F61F68),
         // we store these 5 bytes in a union together with a 8 byte (64 bit) integer (F29_F68)
         // Within F29_F68, F29 is stored at bitposition 0.
-        if (stateValue) locoCmd.F29_F68 = bitSet64(locoCmd.F29_F68, (stateNumber - 29));
-          else locoCmd.F29_F68 = bitClear64(locoCmd.F29_F68, (stateNumber - 29));
+        if (stateValue) locoCmd.F29_F68 = bitSet64(old_F29_F68, (stateNumber - 29));
+          else locoCmd.F29_F68 = bitClear64(old_F29_F68, (stateNumber - 29));
         switch(stateNumber){
           case 29 ... 36: return(Dcc::MyLocoF29F36Cmd);
           case 37 ... 44: return(Dcc::MyLocoF37F44Cmd);
