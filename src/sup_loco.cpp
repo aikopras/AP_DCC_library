@@ -6,6 +6,7 @@
 // version:   2021-05-15 V1.0.2 ap initial version
 //            2022-07-21 V1.0.3 ap trainsMoving flag was removed, since we have SomeLocoMovesFlag
 //            2025-05-12 V1.1.0 lr/ap binaryStates are now supported (RCN-212: Sections 2.3.5 & 2.3.6)
+//            2025-05-16 V1.1.1 ap Small change to avoid compiler warnings
 //
 // This source file is subject of the GNU general public license 3,
 // that is available at the world-wide-web at http://www.gnu.org/licenses/gpl.txt
@@ -167,7 +168,7 @@ Dcc::CmdType_t LocoMessage::analyse(void) {
   uint8_t byte0 = dccMessage.data[0];
   uint8_t instructionByte;
   uint8_t dccData;                  // May be filled from data part in instruction or subsequent bytes
-
+  uint64_t F29_F68_local;           // Needed to avoid compiler warnings on the union
   //
   // Step 1: Determine the loco address, and make already a copy of
   // the instruction byte that defines the kind of command (CCC bits), as well as data
@@ -388,7 +389,6 @@ Dcc::CmdType_t LocoMessage::analyse(void) {
     // - 16 ... 28: reserved
     // - 29 ... 68: F29-F68
     // -      > 68: determined by the application that uses this library
-    uint64_t old_F29_F68 = locoCmd.F29_F68;  // Needed to avoid compiler warnings
     switch (stateNumber) {
       case 0:
         if (stateValue) locoCmd.F29_F68 = 0xFFFFFFFFFF;   // Set F29 till F28 (5 bytes)
@@ -403,8 +403,9 @@ Dcc::CmdType_t LocoMessage::analyse(void) {
         // To enable immediate access to the five Function bytes (F29F36, F37F44, F45F52, F53F60, F61F68),
         // we store these 5 bytes in a union together with a 8 byte (64 bit) integer (F29_F68)
         // Within F29_F68, F29 is stored at bitposition 0.
-        if (stateValue) locoCmd.F29_F68 = bitSet64(old_F29_F68, (stateNumber - 29));
-          else locoCmd.F29_F68 = bitClear64(old_F29_F68, (stateNumber - 29));
+        F29_F68_local = locoCmd.F29_F68;  // Needed to avoid compiler warning
+        if (stateValue) locoCmd.F29_F68 = bitSet64(F29_F68_local, (stateNumber - 29));
+          else locoCmd.F29_F68 = bitClear64(F29_F68_local, (stateNumber - 29));
         switch(stateNumber){
           case 29 ... 36: return(Dcc::MyLocoF29F36Cmd);
           case 37 ... 44: return(Dcc::MyLocoF37F44Cmd);
@@ -412,6 +413,7 @@ Dcc::CmdType_t LocoMessage::analyse(void) {
           case 53 ... 60: return(Dcc::MyLocoF53F60Cmd);
           case 61 ... 68: return(Dcc::MyLocoF61F68Cmd);
         };
+      break;  
       default:            // Binary State processing is handled by the application program
         return(Dcc::MyBinaryStateCmd);
       break;

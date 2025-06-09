@@ -1,6 +1,6 @@
 //******************************************************************************************************
 //
-// file:     sup_isr_MegaCoreX_DxCore.h
+// file:     MegaCoreX_DxCore.h
 // purpose:  DCC receive code for ATmegaX processors, such as ATmega 4808, 4809, AVR DA, AVR DB, ...
 //           using a MegaCoreX or DxCore board
 // author:   Aiko Pras
@@ -8,6 +8,7 @@
 //           2024-06-04 V1.2.1 ap - Error corrected in cases where the preamble had an uneven number
 //                                  of halfbits. This error showed up with DxCore and the Z21 system.
 //                                  Some comments are added for implementing RailCom feedback.
+//           2025-05-16 V1.2.2 ap   Moved to Variants sub directory
 //
 // Result:   1. The received message is collected in the struct "dccrec.tempMessage".
 //           2. After receiving a complete message, data is copied to "dccMessage.data".
@@ -56,7 +57,7 @@
 //******************************************************************************************************
 #include <Arduino.h>
 #include <Event.h>
-#include "sup_isr.h"
+#include "../sup_isr.h"
 
 
 //******************************************************************************************************

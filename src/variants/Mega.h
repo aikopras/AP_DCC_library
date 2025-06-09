@@ -1,10 +1,11 @@
 //******************************************************************************************************
 //
-// file:     sup_isr_mega.h
+// file:     Mega.h
 // purpose:  DCC receiving code for traditional ATmega processors, such as ATmega16, 328, 2560, ...
 // author:   Aiko Pras
 // version:  2021-05-15 V1.0.2 ap initial version
 //           2021-09-01 V1.1.1 ap Supports different compilation units for different boards
+//           2025-05-16 V1.1.2 ap Moved to Variants sub directory
 //
 // Result:   1. The received message is collected in the struct "dccrec.tempMessage".
 //           2. After receiving a complete message, data is copied to "dccMessage.data".
@@ -48,7 +49,7 @@
 //
 //******************************************************************************************************
 #include <Arduino.h>
-#include "sup_isr.h"
+#include "../sup_isr.h"
 
 
 //******************************************************************************************************

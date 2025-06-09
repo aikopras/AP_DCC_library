@@ -1,10 +1,15 @@
 # <a name="AP_DCC_library"></a>AP_DCC_library #
 
-This Arduino library decodes (NMRA) Digital Command Control (DCC) messages. It is primarily intended for accessory Decoders and runs on ATMega processors.
+This Arduino library decodes (NMRA) Digital Command Control (DCC) messages. It is primarily intended for accessory Decoders and should run on all [processors](extras/Boards_Supported.md) that are supported within the Arduino eco-system.
 
-## Relation to the NmraDcc library ##
-Like the NmraDcc library, this library runs on ATMega processors, such as the ATMega 328, which is used on the Arduino UNO board. Whereas the NmraDcc library also runs on other microcontrollers, such as the ESP-32 and the Raspberry Pi Pico, this library only runs ATMega processors. However, on newer ATMega processors, such as the 4809 (Arduino Nano Every, MegaCoreX) and the AVR128DA (DxCore), this library provides better performance and reliability. In addition, it is believed that this library is better structured and documented, making modifications easier. See [History and Differences](extras/History_Differences.md) to understand the motivation why this library has been developed and how it compares to the NmraDcc library.
+## Why this library? ##
+The NmraDcc library is the best-known library for decoding DCC packets. Like the NmraDcc library, this library is also a further development of the OpenDCC code developed by Wolfgang Kufer. While the NmraDcc library meets the needs of most people, I believe that its code is poorly structured and difficult to maintain. The decoding principle is the same for all processors, no matter what special  hardware peripherals new processors offer. Consequently, depending on the processor, the NmraDcc library may not always be able to adhere to the strict timing requirements defined in the RCN standards.
 
+I started developing this library when I switched from traditional ATMega processors, such as the ATMega 328 and 2560, to more modern Microchip 8-bit processors, such as the 4809 (Arduino Nano Every, MegaCoreX) and the AVR128DA (DxCore). Unfortunately I discovered that the performance of the NmraDcc library was unsatisfactory on these new processors; see [Performance on MegaCoreX and DxCore](extras/Performance_MegacoreX.md) for details. Over time, I added support for other DxCore and MegaTiny processors.
+
+After receiving requests to support STM32 and ESP32 processors, I decided to restructure the library and add a generic driver for all other processors. This resulted into Version 2 of this library. However, performance on some of these processors may be sub-optimal. Fortunately, due to the modular structure of this library, it should be possible to gradually add high-quality drivers over time. This modular structure could also pave the way for (later) RailCom support.
+
+*As an aside, the modular structure should additionally make it relatively simple to add code that allows switching between the current programming interface and the NmraDcc library's interface. Proposals are welcome.*
 ___
 
 ## <a name="Dcc"></a>The Dcc Class ##
@@ -83,7 +88,7 @@ The `turnout` attribute tells which of the four switches is being targeted.
 Instead of addressing decoders (that connect multiple switches), it is also possible to directly address individual switches or other outputs (relays, signals, turntables etc). Output addresses are 11 bits in length, and consists basically of the concatenation of the `decoderAddress` and the `switch` attributes.
 
 #### uint8_t position: (0..1) (basic) ####
-Most switches can be positioned via two coils or servos. The "position" attribute tells which of the two coils is being targetted. Unfortunately different command stations made different choices regarding the interpretation of 0 or 1. According to RCN-213, a value 0 is used for "diverging"  tracks (red), whereas the value 1 is used for "straight" tracks (green). The Lenz LH 100 uses '-' for 0, or '+' for 1 to indicate the switch position.
+Most switches can be positioned via two coils or servos. The "position" attribute tells which of the two coils is being targetted. Unfortunately different command stations made different choices regarding the interpretation of 0 or 1. According to RCN-213, a value 0 is used for "diverging"  tracks (red), whereas the value 1 is used for "straight" tracks (green). Some command stations use '-' for 0, or '+' for 1 to indicate the position.
 
 #### uint8_t device: (1..8) (basic) ####
 In case of relays or other on/off devices usage of the `turnout` and `position` attributes may seem artificial. In such cases the `device` attribute may be used instead.
@@ -209,7 +214,7 @@ void setup() {
   // we display details for all decoders with addresses between 1 and 100.
   // Note: One decoder address supports 4 switches   
   accCmd.setMyAddress(1, 100);    // Decoder 100 is switch 397..400
-  accCmd.myMaster = OpenDCC;      // Switch addresses according to RCN213 
+  accCmd.myMaster = OpenDCC;      // Switch addresses according to RCN213
   delay(1000);
   Serial.println("Test DCC lib");
 }
@@ -244,17 +249,10 @@ void loop() {
 }
 ```
 
-## Hardware ##
-- On traditional ATMega processors: Timer 2 is used
-- On novel ATMega processors: TCB0 is used (another TCB timer may be selected by uncommenting the related define in [sup_isr_MegaCoreX_DxCore.h](src/sup_isr_MegaCoreX_DxCore.h)
-- A free to chose interrupt pin (dccpin) for the DCC input signal
-- A free to chose digital output pin for the DCC-ACK signal. Only needed if SM programming is required.
-
-
 ## Reference ##
 This code follows the NMRA DCC standard S9.2 S9.2.1 and S9.2.3 as well as RCN211-RCN214 (in German, by [http://railcommunity.org](http://railcommunity.org)), which include more detailed descriptions as well as the differences in accessory decoder addresses.
 
 
 # Support pages #
+- [Supported boards and processors](extras/Boards_Supported.md)
 - [Performance on MegaCoreX and DxCore microcontrollers](extras/Performance_MegacoreX.md)
-- [History and motivation behind this library](extras/History_Differences.md)

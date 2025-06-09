@@ -6,6 +6,7 @@
 //           See: https://github.com/MCUdude/MegaCoreX
 // author:   Aiko Pras
 // version:  2021-09-01 V1.0.0 ap Initial version
+//           2025-05-16 V1.0.1 ap Moved to Variants sub directory
 //
 // Result:   1. The received message is collected in the struct "dccrec.tempMessage".
 //           2. After receiving a complete message, data is copied to "dccMessage.data".
@@ -38,7 +39,7 @@
 //
 //******************************************************************************************************
 #include <Arduino.h>
-#include "sup_isr.h"
+#include "../sup_isr.h"
 
 
 //******************************************************************************************************
