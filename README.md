@@ -1,4 +1,4 @@
-# <a name="AP_DCC_library"></a>AP_DCC_library #
+# <a name="AP_DCC_library"></a>AP_DCC_library (Version 2) #
 
 This Arduino library decodes (NMRA) Digital Command Control (DCC) messages. It is primarily intended for accessory Decoders and should run on all [processors](extras/Boards_Supported.md) that are supported within the Arduino eco-system.
 
