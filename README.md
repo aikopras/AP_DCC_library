@@ -7,7 +7,7 @@ The NmraDcc library is the best-known library for decoding DCC packets. Like the
 
 I started developing this library when I switched from traditional ATMega processors, such as the ATMega 328 and 2560, to more modern Microchip 8-bit processors, such as the 4809 (Arduino Nano Every, MegaCoreX) and the AVR128DA (DxCore). Unfortunately I discovered that the performance of the NmraDcc library was unsatisfactory on these new processors; see [Performance on MegaCoreX and DxCore](extras/Performance_MegacoreX.md) for details. Over time, I added support for other DxCore and MegaTiny processors.
 
-After receiving requests to support STM32 and ESP32 processors, I decided to restructure the library and add a generic driver for all other processors. This resulted into Version 2 of this library, with an improved [modular structure](/src/modules/modules.md). However, performance on some of these processors may be sub-optimal. Fortunately, due to the modular structure of this library, it should be possible to gradually add high-quality drivers over time. This modular structure could also pave the way for (later) RailCom support.
+After receiving requests to support STM32 and ESP32 processors, I decided to restructure the library and add a generic driver for all other processors. This resulted into Version 2 of this library, with an improved [modular structure](extras/modules/modules.md). However, performance on some of these processors may be sub-optimal. Fortunately, due to the modular structure of this library, it should be possible to gradually add high-quality drivers over time. This modular structure could also pave the way for (later) RailCom support.
 
 *As an aside, the modular structure should additionally make it relatively simple to add code that allows switching between the current programming interface and the NmraDcc library's interface. Proposals are welcome.*
 ___
@@ -255,5 +255,5 @@ This code follows the NMRA DCC standard S9.2 S9.2.1 and S9.2.3 as well as RCN211
 
 # Support pages #
 - [Supported boards and processors](extras/Boards_Supported.md)
-- [The modular structure in details](/src/modules/modules.md)
+- [The modular structure in details](extras/modules/modules.md)
 - [Performance on MegaCoreX and DxCore microcontrollers](extras/Performance_MegacoreX.md)
