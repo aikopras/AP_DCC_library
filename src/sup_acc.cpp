@@ -7,6 +7,8 @@
 //            2022-02-22 V1.0.3 ap Corrected retransmission test, to include decoderAddress_old
 //            2024-09-13 V1.0.4 ap Corrected the last four addresses: between 2045-2048
 //                                 Tested Extended packets
+//            2025-08-10 V1.0.5 ap Added functions and booleans for CV29 bit 6 (output addressing)
+//                                 and bit 3 (Railcom)
 //
 // This source file is subject of the GNU general public license 3,
 // that is available at the world-wide-web at http://www.gnu.org/licenses/gpl.txt
@@ -150,6 +152,8 @@ AccMessage::AccMessage(){
   myAccAddrFirst = 65535;              // Ensure that, if not initialised, no messages matches my address
   myAccAddrLast  = 65535;
   decoderAddress_old = 65535;          // This address should not be found in any accessory message
+  outputAddressing = false;            // If true, the decoder uses output (instead of decoder) addressing
+  railcom = false;                     // If true, the decoder implements railcom
   byte1_old = 0b00000000;              // This pattern should not occur in any accessory command
   byte2_old = 0b11111111;              // This pattern should not occur in an extended accessory command
 }
@@ -157,8 +161,11 @@ AccMessage::AccMessage(){
 
 bool AccMessage::IsMyAddress() {
   const unsigned int broadcast_address = 2047;
-  return (((accCmd.decoderAddress >= myAccAddrFirst) && (accCmd.decoderAddress <= myAccAddrLast))
-       || (accCmd.decoderAddress == broadcast_address));
+  if (accCmd.decoderAddress == broadcast_address) {return 1;}
+  else {
+    if (outputAddressing) {return ((accCmd.decoderAddress >= myAccAddrFirst) && (accCmd.decoderAddress <= myAccAddrLast));}
+    else return ((accCmd.decoderAddress >= myAccAddrFirst) && (accCmd.decoderAddress <= myAccAddrLast));
+  }
 }
 
 
@@ -271,3 +278,12 @@ Dcc::CmdType_t AccMessage::analyse(void) {
   };
   return(Dcc::IgnoreCmd);                                       // Unknown packet
 };
+
+
+//******************************************************************************************************
+// Methods to mimic CV29 bit 6 and bit 3 
+//******************************************************************************************************
+void AccMessage::setOutputAddressing(void) {outputAddressing = true;}
+void AccMessage::clearOutputAddressing(void) {outputAddressing = false;}
+void AccMessage::startRailcom(void) {railcom = true;}
+void AccMessage::stopRailcom(void) {railcom = false;}

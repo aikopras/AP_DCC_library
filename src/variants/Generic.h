@@ -5,6 +5,7 @@
 // author:   Aiko Pras (see note)
 // version:  2025-05-16 V1.0.0 ap initial version
 //           2025-06-06 V1.0.1 ap several improvements made. Bug removed.
+//           2025-08-10 V1.0.2 ap dccrec itself was made volatile, instead od some of its fields.
 //
 // note:     Code is comparable to the NmraDcc library: https://github.com/mrrwa/NmraDcc/
 //           in the sense that also this library does not use any processor specific peripherals,
@@ -65,10 +66,10 @@ extern DccMessage dccMessage;
 #define WAIT_END_BIT        (1<<3)
 
 // Local variables
-struct {
+volatile struct {
   uint8_t bitCount;                           // Count number of preamble bits / if we have a byte
-  volatile uint8_t tempMessage[MaxDccSize];   // Once we have a byte, we store it in the temp message
-  volatile uint8_t tempMessageSize;           // Here we keep track of the size, including XOR
+  uint8_t tempMessage[MaxDccSize];            // Once we have a byte, we store it in the temp message
+  uint8_t tempMessageSize;                    // Here we keep track of the size, including XOR
 } dccrec;                                     // The received DCC message is assembled here
 
 // Variables used by ISR

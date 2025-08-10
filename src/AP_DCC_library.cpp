@@ -164,8 +164,9 @@ void Dcc::sendAck(void) {
 //******************************************************************************************************
 void Accessory::setMyAddress(unsigned int first, unsigned int last) {
   // This method should be called in setup() of the main sketch
-  // If called with a single parameter, that parameter will be the decoder's Accessory address.
-  // In that case "last" has the default value 65535 (maxint)
+  // If called with a single parameter, that parameter will be the Accessory address,
+  // which may be the decoder address, or the output address
+  // In called with a single parameter, "last" has the default value 65535 (maxint)
   // If called with two parameters, the decoder listens to all addresses between first and last
   accMessage.myAccAddrFirst = first;
   if (last == 65535) accMessage.myAccAddrLast = first;
