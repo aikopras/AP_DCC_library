@@ -5,7 +5,7 @@
 //           Implements the code to assemble bits to a complete message
 //           This code is independent of a specific type of hardware
 //
-//            2025-08-10 V1.0.1 ap changes made in dccrec.bitCount and dccrec.tempMessageSize after 
+//            2025-08-11 V1.0.1 ap changes made in dccrec.bitCount and dccrec.tempMessageSize after 
 //                                 warning: '++' expression of 'volatile'-qualified type is deprecated
 //
 //******************************************************************************************************
@@ -68,8 +68,8 @@
       else
       {
         dccrecState = WAIT_END_BIT;                  // Wait for next byte or end of packet
-        dccrec.tempMessageSize = dccrec.tempMessageSize + 1;
         dccrec.tempMessage[dccrec.tempMessageSize] = tempByte;
+        dccrec.tempMessageSize = dccrec.tempMessageSize + 1;
       }
     }
     break;

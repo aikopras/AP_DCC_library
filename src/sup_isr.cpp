@@ -34,6 +34,9 @@
 #elif defined (ARDUINO_AVR_NANO_EVERY)
   // Arduino Nano Every (4809 and similar), using an Arduino megaAVR board (not recommended)
   #include "variants/Nano_Every.h"
+#elif defined (ARDUINO_ARCH_ESP32)
+  // ESP32 processors
+  #include "variants/ESP32.h"
 #else
   // This driver should work for all possible boards and processors, although sometimes sub-optimal 
   #include "variants/Generic.h"
