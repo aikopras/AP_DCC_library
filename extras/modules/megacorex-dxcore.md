@@ -95,22 +95,6 @@ For more detail, see: [Performance on MegaCoreX and DxCore microcontrollers](ext
 
 ---
 
-## Advantages over Generic Driver
-* **Minimal CPU load** — avoids slow Arduino calls (`attachInterrupt()`, `micros()`).
-- **Precise half-bit timing** — compliant with RCN-210.
-- **Robust against jitter** — hardware measurement avoids software delays.
-- **Solid basis for future RailCom implementation** — though RailCom TX is not yet implemented.
-
----
-
-## Limitations
-- Requires modern ATMega MCUs, with **Event System** and **TCB timers**.
-- Implementation complexity is higher than the generic driver.
-- RailCom feedback is not yet implemented.
-- Zero-bit stretching is not implemented.
-
----
-
 ## Future Enhancements
 RailCom support is **currently in development**.
 Planned approach:
