@@ -36,6 +36,9 @@ TCB0 is the default timer. This can be changed by setting  in the [MegaCoreX_DxC
 When using an ATMegaX 4809 processor on an Arduino Nano Every with the "standard" Arduino megaAVR board selected in the Arduino IDE instead of the MegaCoreX board, a decoding approach similar to that used with traditional ATmega processors is employed: a change in the DCC input signal triggers an ISR, which sets a timer. Once the timer fires, the value of the DCC input pin is read.
 Note that using a "standard" Arduino Mega AVR board results in considerably more overhead than we are accustomed to with traditional ATmega processors. Therefore, switching to a MegaCoreX board is strongly encouraged.
 
+### ESP32 / ESP8266 ###
+Two ESP specific drivers exist. They are basically identical to the generic driver, except for two minor issues: a keyword is added to tell in which RAM the driver should be running, and the Arduino micros() call is replaced by more specific native calls.
+
 ## Tested board and processors ##
 The library has been tested on the following boards and processors:
 - Arduino UNO / Nano (ATmega 328)
@@ -47,6 +50,7 @@ The library has been tested on the following boards and processors:
 - DxCore (Many AVR DA processors)
 - STM32: Nucleo F411RE, F446RE, F439ZI
 - ESP32
+- ESP8266
 - RP2040
 
 ### Acknowledgements ###

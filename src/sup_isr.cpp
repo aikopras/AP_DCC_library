@@ -5,6 +5,7 @@
 // author:    Aiko Pras
 // version:   2021-05-15 V1.0.0 ap Initial version
 //            2025-06-09 V2.0.0 ap Restructured and a Generic driver was added
+//            2025-10-09 V2.0.1 ap Driver for ESP8266 / ESP8255 added
 //
 // Purpose: Select the best DCC capture code for a specific processor and board.
 //
@@ -37,6 +38,9 @@
 #elif defined (ARDUINO_ARCH_ESP32)
   // ESP32 processors
   #include "variants/ESP32.h"
+#elif defined(ARDUINO_ARCH_ESP8266)
+  // ESP8266 and ESP8255 processors
+  #include "variants/ESP8266.h"
 #else
   // This driver should work for all possible boards and processors, although sometimes sub-optimal 
   #include "variants/Generic.h"
