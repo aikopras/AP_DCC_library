@@ -139,7 +139,7 @@ To quantify this for our specific DCC decoding application, we did the following
 
 #### *Takeaway:*
 *1. The chosen **margin of 10 µs** in the ESP32 driver should be sufficient, provided we use `esp_timer_get_time()` instead of `micros()`.*  
-*2. The jitter is likely acceptable for **reliable RailCom implementation**.*
+*2. The observed jitter suggests that **RailCom may be feasible**, but reliable implementation will strongly depend on system load and careful timing margins.*
 
 ---
 

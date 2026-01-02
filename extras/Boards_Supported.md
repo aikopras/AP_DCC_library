@@ -5,10 +5,12 @@ This library is compatible with various processors and boards. For this reason, 
 In version 2 of the library, the drivers were renamed and moved to a separate directory called "variants". In addition, a *generic* driver was developed that has the advantage of running on all possible boards, but the disadvantage of possibly having suboptimal performance. Therefore, to achieve optimal DCC decoding quality and efficiency, specific drivers that exploit peripherals available on modern processors have been developed. Additional drivers for specific processors may be added in the future, to further improve DCC decoding results.
 
 Regardless of the selected driver, the following peripherals are always needed:
-- A free-to-choose interrupt pin (dccpin) for the DCC input signal
-- A free-to-choose output pin for the DCC-ACK signal. This is only needed if SM programming is required.
+- A DCC input pin (`dccPin`). Depending on the selected driver, this may be any GPIO interrupt pin or a fixed pin tied to a specific timer/channel; see the driver-specific documentation.
+- A DCC-ACK output pin, freely selectable. This is only required if Service Mode programming is used.
+
 
 ### Generic.h ###
+→ [Generic driver details](modules/generic.md)
 
 This driver should compile and run on all boards that can be installed via the Arduino Board Manager. The driver uses the functions `attachInterrupt()`, `digitalPinToInterrupt()` and `micros()`. Any board that can perform these functions should be able to run this library.
 From a technical standpoint, this driver is comparable to the NmraDcc library. A change in the state of a pin triggers an Interrupt Service Routine (ISR), which calls the `micros()` function and performs a comparison with the value stored during the previous interrupt. If the difference falls within certain ranges, it is concluded that the bit should be a 0 or a 1.
@@ -16,6 +18,7 @@ From a technical standpoint, this driver is comparable to the NmraDcc library. A
 However, this approach has several disadvantages. First, if there are interrupts from other peripherals, such as the UART, I2C, or the `millis()` timer, the execution of the ISR may be delayed. Second, `attachInterrupt()` takes nonnegligible time. On traditional ATmega processors, it takes 3 µs before and 2 µs after the real ISR code. On newer 8-bit processors, these times may be considerably larger. Third, the resolution of `micros()` is 4 µs, and executing this call may take multiple µs. Together, these factors may lead to imprecise pulse length measurements and incorrect DCC signal decoding. These factors are particularly notable with processors that run at speeds of 24 MHz or lower.
 
 ### Mega.h ###
+→ [Mega (ATmega) driver details](mega.md)
 
 For traditional ATmega processors, such as those used on Arduino UNO, NANO and MEGA boards, we use an approach in which a change in the DCC input signal triggers an interrupt service routine (ISR). Unlike the generic driver, however, this code does not measure time using the `micros()` function. Instead, it sets a hardware timer (`Timer2`) to 77 µs. Once this timer fires, the value of the DCC input signal is read to determine whether it is a 0 or a 1. This approach is identical to that of the OpenDCC V2 decoders developed by Wolfgang Kufer.
 
@@ -24,6 +27,7 @@ This approach offers more precise and efficient DCC decoding at the expense of a
 Note that this driver can also be used in conjunction with MegaCore boards, that support processors like the ATMega16.
 
 ### MegaCoreX_DxCore ###
+→ [MegaCoreX / DxCore driver details](megacorex-dxcore.md)
 
 For newer ATMegaX processors, such as the ATmega4808 and ATmega4809 (Arduino Nano Every, MegaCoreX), as well as the AVR Dx series (DxCore), we exploit the new Event System Peripheral to offload certain tasks to the hardware. Additionally, we use one of the timers in frequency capture mode. This approach considerably improves the quality and efficiency of the DCC decoding. The quality is improved due to the fact that the interval between changes in the DCC input signal is measured in hardware, and is therefore made very precise and in accordance with the timing requirements as defined by the Rail Community (RCN-210). In fact, DCC decoding quality does not degrade, even when other tasks frequently generate interrupts, such as communication buses for feedback signals. Efficiency improves because more functions are performed in hardware, thereby reducing the CPU load. See [Performance on MegaCoreX and DxCore microcontrollers](Performance_MegacoreX.md) for details.
 
@@ -36,7 +40,21 @@ TCB0 is the default timer. This can be changed by setting  in the [MegaCoreX_DxC
 When using an ATMegaX 4809 processor on an Arduino Nano Every with the "standard" Arduino megaAVR board selected in the Arduino IDE instead of the MegaCoreX board, a decoding approach similar to that used with traditional ATmega processors is employed: a change in the DCC input signal triggers an ISR, which sets a timer. Once the timer fires, the value of the DCC input pin is read.
 Note that using a "standard" Arduino Mega AVR board results in considerably more overhead than we are accustomed to with traditional ATmega processors. Therefore, switching to a MegaCoreX board is strongly encouraged.
 
+### STM32 ###
+→ [STM32 driver details](stm32.md)
+
+For STM32-based boards, a dedicated driver is provided that leverages the advanced timers available on these processors to achieve precise and efficient DCC decoding. Unlike the generic driver, this driver does not rely on `micros()` or `attachInterrupt()` for timing measurement. Instead, it uses a hardware timer in input capture mode, allowing precise measurement of the interval between DCC signal edges. This reduces CPU load and ensures accurate bit detection even when other interrupts occur.
+
+The driver uses a fixed DCC input pin tied to a specific timer/channel. This choice ensures portability across multiple STM32 variants and avoids the complexity of finding valid pin-to-timer mappings that work reliably on all boards. By default, the driver uses pin PB6 with TIM4, but this can be changed by adjusting two `#define` statements in the driver source. Care should be taken to consult the datasheet of the specific STM32 processor when changing these settings.
+
+Data flow is straightforward: each DCC edge triggers the timer capture, the ISR reads the captured value, classifies the bit as 0 or 1, and assembles the packet. Completed packets are copied to the `dccMessage` structure, and the `isReady` flag is set. Performance measurements indicate an average ISR entry latency of ~1.2 µs and ISR execution time of ~3 µs, significantly faster than the generic driver, and comparable to the DxCore approach.
+
+The correct STM32 board definitions must be installed in the Arduino IDE to ensure proper compilation and peripheral support:
+- STM32duino / STMicroelectronics Arduino Core: https://github.com/stm32duino/Arduino_Core_STM32  
+
 ### ESP32 / ESP8266 ###
+→ [ESP32 driver details](esp32.md)
+
 Two ESP specific drivers exist. They are basically identical to the generic driver, except for two minor issues: a keyword is added to tell in which RAM the driver should be running, and the Arduino micros() call is replaced by more specific native calls.
 
 ## Tested board and processors ##

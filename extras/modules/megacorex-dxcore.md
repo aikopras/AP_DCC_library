@@ -91,7 +91,7 @@ By using the **Event System + TCB Capture Mode** offered by the newer ATMega pro
 
 ![Performance new processors](../CPU-load-128DA48-24Mhz-1.png "Performance new processors")
 
-For more detail, see: [Performance on MegaCoreX and DxCore microcontrollers](extras/Performance_MegacoreX.md).
+For more detail, see: [Performance on MegaCoreX and DxCore microcontrollers](../extras/Performance_MegacoreX.md).
 
 ---
 

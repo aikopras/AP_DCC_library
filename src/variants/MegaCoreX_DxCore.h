@@ -9,6 +9,7 @@
 //                                  of halfbits. This error showed up with DxCore and the Z21 system.
 //                                  Some comments are added for implementing RailCom feedback.
 //           2025-05-16 V1.2.2 ap   Moved to Variants sub directory
+//           2026-01-02 V1.2.1 ap   initTcb and initEventSystem changed into static inline
 //
 // Result:   1. The received message is collected in the struct "dccrec.tempMessage".
 //           2. After receiving a complete message, data is copied to "dccMessage.data".
@@ -23,7 +24,7 @@
 //  - Event:  One of the Event channels available in ATmegaX processors.
 //            The software automatically selects an available channel.
 //            Not every pin can be connected to every Event channel. If other software has already
-//            claimed usage of some channels, it might be necessary to select a DCC input pin on 
+//            claimed usage of some channels, it might be necessary to select a DCC input pin on
 //            another port. See also: https://github.com/MCUdude/MegaCoreX#event-system-evsys
 //
 // Howto: This part of the library takes advantage of the Event system peripheral that is implemented
@@ -35,7 +36,7 @@
 // The value in TCBn.CCMP is the number of ticks since the previous event, thus the time since the
 // previous DCC signal transition. This time determines if the received DCC signal represents (half of)
 // a zero or one bit.
-// Since we do not want to introduce any dependency between our TCB timer and the TCA prescaler, 
+// Since we do not want to introduce any dependency between our TCB timer and the TCA prescaler,
 // TCB is used at clock speed. This requires us to use TCB in 16 bit mode. If we would have used the
 // TCA prescaler, TCB could have been run in 8-bit mode, saving us roughly 8 clock cycli.
 // To conform to the RCN-210 standard, we measure the times for both first as well as second half bit.
@@ -45,7 +46,7 @@
 //
 // This code uses the Event system of MegaCoreX and DxCore:
 // https://github.com/MCUdude/MegaCoreX#event-system-evsys
-// https://github.com/SpenceKonde/DxCore 
+// https://github.com/SpenceKonde/DxCore
 //
 // Note: Railcom feedback has not been implemented.
 // Implementation could be relatively easy by using an additional timer to determine the exact moment
@@ -130,7 +131,7 @@ static volatile TCB_t* _timer;                // In init and detach we use a poi
 //******************************************************************************************************
 // 4. Initialise timer and event system
 //******************************************************************************************************
-void DccMessage::initTcb(void) {
+static inline void initTcb(void) {
   // Step 1: Instead of calling a specific timer directly, in init and detach we use a pointer to the
   // selected timer. However, since pointers add a level of indirection, within the timer ISR the two
   // registers that we use (EVCTRL and CCMP) will be directly accessed via #defines
@@ -154,7 +155,7 @@ void DccMessage::initTcb(void) {
     #define timer_EVCTRL TCB3_EVCTRL
     #define timer_CCMPL  TCB3_CCMPL
     #define timer_CCMP   TCB3_CCMP
-  #else  
+  #else
     // fallback to TCB0 (every platform has it)
     _timer = &TCB0;
     #define timer_EVCTRL TCB0_EVCTRL
@@ -180,7 +181,7 @@ void DccMessage::initTcb(void) {
 }
 
 
-void DccMessage::initEventSystem(uint8_t dccPin) {
+static inline void initEventSystem(uint8_t dccPin) {
   // Note: this code uses the new Event Library of MegaCoreX / DxCore
   noInterrupts();
   Event& myEvent = Event::assign_generator_pin(dccPin);
@@ -258,14 +259,14 @@ void DccMessage::detach(void) {
   // fallback to TCB0 (every platform has it)
   ISR(TCB0_INT_vect) {
 #endif
-  
+
   timer_EVCTRL ^= TCB_EDGE_bm;                         // Change the event edge at which we trigger
-  uint16_t  delta = timer_CCMP;                        // Delta holds the time since the previous interrupt 
+  uint16_t  delta = timer_CCMP;                        // Delta holds the time since the previous interrupt
   uint8_t DccBitVal;
 
   if ((delta >= ONE_BIT_MIN) && (delta <= ONE_BIT_MAX)) {
     if (dccHalfBit & EXPECT_ONE) {                     // This is the second part of the 1 bit
-      dccHalfBit = EXPECT_ANYTHING; 
+      dccHalfBit = EXPECT_ANYTHING;
       DccBitVal = 1;
     }
     else if (dccHalfBit & EXPECT_ANYTHING) {           // This is the first part of the 1 bit
@@ -319,6 +320,6 @@ void DccMessage::detach(void) {
     // Packet End Bit is detected (in sup_isr_assemble_packet.h)
     return;
   }
-    
+
   #include "sup_isr_assemble_packet.h"
 }

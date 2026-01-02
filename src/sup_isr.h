@@ -8,6 +8,7 @@
 //            2021-09-02 V1.2.0 ap Restructure, to better support different ATmega processors
 //                                 DCC signal detection is significantly improved if used with
 //                                 an ATmegaX (ATmega4808, ATmega4809, AVR DA, AVR DB, ...) processor
+//            2026-01-02 V1.2.1 ap private DxCore specific methods removed
 //
 // history:   This is a further development of the OpenDecoder 2 software, as developed by W. Kufer.
 //            It implements the DCC receiver code, in particular the layer 1 (bit detection) and
@@ -37,8 +38,6 @@ class DccMessage {
 
   private:
     uint8_t _dccPin;                              // Here we store a local copy of the DCC input pin
-    void initTcb(void);                           // Specific for the MegaCoreX/DxCore variant
-    void initEventSystem(uint8_t dccPin);         // Specific for the MegaCoreX/DxCore variant
 };
 
 

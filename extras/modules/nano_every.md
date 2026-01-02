@@ -4,8 +4,7 @@
 The **Nano Every** driver implements DCC reception for the Arduino Nano Every using a combination of a **pin change interrupt** and a **TCB timer** in Periodic Interrupt mode.  
 It is functionally similar to the [Mega driver](mega.md) but adapted to the Nano Every's different timer naming and operation.
 
-⚠️ **Note:** This driver is only recommended if you do not want to install the [MegaCoreX](https://github.com/MCUdude/MegaCoreX) core.  
-Using MegaCoreX together with the [MegaCoreX/DxCore driver](megacorex-dxcore.md) is strongly preferred due to significantly better performance.
+⚠️ **Note:** This driver exists mainly for compatibility with the stock Arduino core. For any serious DCC application, [MegaCoreX](https://github.com/MCUdude/MegaCoreX) with the [MegaCoreX/DxCore driver](megacorex-dxcore.md) driver is strongly recommended.
 
 ## Operating Principle
 - A **pin interrupt** triggers on each rising DCC edge.
