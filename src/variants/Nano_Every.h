@@ -7,6 +7,7 @@
 // author:   Aiko Pras
 // version:  2021-09-01 V1.0.0 ap Initial version
 //           2025-05-16 V1.0.1 ap Moved to Variants sub directory
+//           2026-06-21 V1.0.2 ap preambleCount added (issue #13)
 //
 // Result:   1. The received message is collected in the struct "dccrec.tempMessage".
 //           2. After receiving a complete message, data is copied to "dccMessage.data".
@@ -21,9 +22,9 @@
 // Howto: Uses two interrupt: Pin interrupt and Timer interrupt.
 // A rising edge in DCC polarity triggers the Pin ISR, which starts TCBx in Periodic Interrupt mode.
 // On TCBx  the level of DCC is evaluated and parsed.
-// The Timer period is 67us (instead of77!), to keep enough headroom for the (high) overhead of 
+// The Timer period is 67us (instead of77!), to keep enough headroom for the (high) overhead of
 // the Ardiuno attachInterupt() call, which is due to the different Interrupt system on ATmegaX
-// processors much higher than on the traditional ATmega processors. 
+// processors much higher than on the traditional ATmega processors.
 //
 //                           |<-----116us----->|
 //
@@ -80,7 +81,8 @@ extern DccMessage dccMessage;
 #define WAIT_END_BIT        (1<<3)
 
 struct {
-  uint8_t bitCount;                           // Count number of preamble bits / if we have a byte
+  uint8_t bitCount;                           // Counts bits within a byte
+  uint8_t preambleCount;                      // Counts consecutive "1" bits for preamble detection (2026/06/21)
   volatile uint8_t tempMessage[MaxDccSize];   // Once we have a byte, we store it in the temp message
   volatile uint8_t tempMessageSize;           // Here we keep track of the size, including XOR
 } dccrec;                                     // The received DCC message is assembled here
@@ -192,7 +194,8 @@ void DccMessage::attach(uint8_t dccPin, uint8_t ackPin) {
   _dccPin = dccPin;
   tempByte = 0;
   dccrecState = WAIT_PREAMBLE;
-  dccrec.bitCount = 0 ;
+  dccrec.bitCount = 0;
+  dccrec.preambleCount = 0;
   // initialise the global variables (the DccMessage attributes)
   dccMessage.size = 0;
   dccMessage.isReady = 0;
@@ -246,12 +249,12 @@ ISR(TCB3_INT_vect) {
 ISR(TCB0_INT_vect) {
 #endif
   // Read the DCC input value, if the input is low then its a 1 bit, otherwise it is a 0 bit
-  uint8_t DccBitVal;     
+  uint8_t DccBitVal;
   DccBitVal = !(*dccIn.portRegister & dccIn.bit);
   // Stop TCBx and preload its value for the next cycle
   _timer->INTFLAGS |= TCB_CAPT_bm;      // We had an interrupt
   _timer->CTRLA &= ~TCB_ENABLE_bm;      // Clear Timer Enable
   _timer->CNT = 0;                      // CNT will not reset automatically
-  // Add the captured byte to the message 
+  // Add the captured byte to the message
   #include "sup_isr_assemble_packet.h"
 }

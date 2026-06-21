@@ -5,11 +5,24 @@
 //           Implements the code to assemble bits to a complete message
 //           This code is independent of a specific type of hardware
 //
-//            2025-08-11 V1.0.1 ap changes made in dccrec.bitCount and dccrec.tempMessageSize after 
+//            2025-08-11 V1.0.1 ap changes made in dccrec.bitCount and dccrec.tempMessageSize after
 //                                 warning: '++' expression of 'volatile'-qualified type is deprecated
+//            2026-06-21 V1.0.2 ap dccrec.preambleCount added to track preamble bits independently
+//                                 of the main state machine, so that trailing "1" bits of faulty or
+//                                 too-long packets are not lost as preamble bits for the next packet.
+//                                 Fixes issue reported by Vincent Hamp.
 //
 //******************************************************************************************************
   dccrec.bitCount = dccrec.bitCount +1;
+
+  // Track preamble bits independently of the state machine.
+  // This ensures that "1" bits received in any state are counted towards
+  // the next preamble, so trailing "1" bits at the end of a faulty or
+  // too-long packet are not discarded.
+  if (DccBitVal)
+    dccrec.preambleCount = dccrec.preambleCount + 1;
+  else
+    dccrec.preambleCount = 0;
 
   switch( dccrecState )
   {
@@ -25,14 +38,13 @@
     // The preamble to a packet consists of a sequence of "1" bits.
     // A digital decoder must not accept as a valid, any preamble
     // that has less then 10 complete one bits
+    // dccrec.preambleCount runs in parallel (see above) and is not reset here,
+    // so that "1" bits received after returning from any other state
+    // are not lost.
     if( DccBitVal )                                   // a "1" bit is received
     {
-      if( dccrec.bitCount >= 10 )
+      if( dccrec.preambleCount >= 10 )
         dccrecState = WAIT_START_BIT;
-    }
-    else
-    {
-      dccrec.bitCount = 0;                            // not a valid preamble.
     }
     break;
 
@@ -50,7 +62,6 @@
         dccrec.tempMessage[i] = 0;
       dccrec.bitCount = 0;
       tempByte = 0;
-
     }
     break;
 
@@ -64,6 +75,8 @@
       {
         dccrecState = WAIT_PREAMBLE;
         dccrec.bitCount = 0;
+        // Note: dccrec.preambleCount is NOT reset here. Any "1" bits already
+        // received will be counted towards the next preamble.
       }
       else
       {

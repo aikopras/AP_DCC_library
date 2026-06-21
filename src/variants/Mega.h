@@ -6,6 +6,7 @@
 // version:  2021-05-15 V1.0.2 ap initial version
 //           2021-09-01 V1.1.1 ap Supports different compilation units for different boards
 //           2025-05-16 V1.1.2 ap Moved to Variants sub directory
+//           2026-06-21 V1.1.3 ap preambleCount added (issue #13)
 //
 // Result:   1. The received message is collected in the struct "dccrec.tempMessage".
 //           2. After receiving a complete message, data is copied to "dccMessage.data".
@@ -96,7 +97,8 @@ AdcStart adcStart;
 
 // Local variables
 struct {
-  uint8_t bitCount;                           // Count number of preamble bits / if we have a byte
+  uint8_t bitCount;                           // Counts bits within a byte
+  uint8_t preambleCount;                      // Counts consecutive "1" bits for preamble detection (2026/06/21)
   volatile uint8_t tempMessage[MaxDccSize];   // Once we have a byte, we store it in the temp message
   volatile uint8_t tempMessageSize;           // Here we keep track of the size, including XOR
 } dccrec;                                     // The received DCC message is assembled here
@@ -215,8 +217,9 @@ void dcc_interrupt(void) {
 void DccMessage::attach(uint8_t dccPin, uint8_t ackPin) {
   // Initialize the local variables
   _dccPin = dccPin;
-  dccrecState = WAIT_PREAMBLE ;
-  dccrec.bitCount = 0 ;
+  dccrecState = WAIT_PREAMBLE;
+  dccrec.bitCount = 0;
+  dccrec.preambleCount = 0;
   tempByte = 0 ;
   // initialise the global variables (the DccMessage attributes)
   dccMessage.size = 0;

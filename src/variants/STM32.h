@@ -4,6 +4,7 @@
 // purpose:  DCC receive code for STM32 processors
 // author:   Aiko Pras
 // version:  2026-01-02 V1.0.0 ap   Initial version
+//           2026-06-21 V1.0.1 ap   preambleCount added (issue #13)
 //
 // Result:   1. The received message is collected in the struct "dccrec.tempMessage".
 //           2. After receiving a complete message, data is copied to "dccMessage.data".
@@ -111,7 +112,8 @@ extern DccMessage dccMessage;
 #define EXPECT_ANYTHING     (1<<2)
 
 struct {
-  uint8_t bitCount;                           // Count number of preamble bits / if we have a byte
+  uint8_t bitCount;                           // Counts bits within a byte
+  uint8_t preambleCount;                      // Counts consecutive "1" bits for preamble detection (2026/06/21)
   volatile uint8_t tempMessage[MaxDccSize];   // Once we have a byte, we store it in the temp message
   volatile uint8_t tempMessageSize;           // Here we keep track of the size, including XOR
 } dccrec;                                     // The received DCC message is assembled here
@@ -152,6 +154,7 @@ void DccMessage::attach(uint8_t dccPin, uint8_t ackPin) {
   tempByte = 0;
   dccrecState = WAIT_PREAMBLE;
   dccrec.bitCount = 0;
+  dccrec.preambleCount = 0;
   // initialise the global variables (the DccMessage attributes)
   dccMessage.size = 0;
   dccMessage.isReady = 0;
