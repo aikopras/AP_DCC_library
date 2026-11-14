@@ -151,8 +151,6 @@ class Dcc {
 // the sletch writer.
 //
 // ADDRESSING DETAILS
-// The broadcast outputAddress is 2047.
-//
 // Different command station manufacturers made different choices regarding the exact coding
 // of the address bits within the DCC packet. See "sup_acc.cpp" for details.
 // In many cases these differences can be neglected, unless the decoder address will also be
@@ -165,6 +163,11 @@ class Dcc {
 // If the call includes a single parameter, that parameter represents the (single) address this decoder
 // will listen to. If the call includes two parameters, these parameters represent the range of addresses
 // this decoder will listen to.
+//
+// Broadcast commands for accessory decoders are not implemented. RCN-213 used the 11-bit address
+// 2047 (10111111 1000xxxx) for an emergency stop (Notaus), but deleted that command in its edition
+// of 01.09.2023. This bit pattern is now a normal address: user address 2044. XpressNet V4.0 does
+// not define a broadcast for accessory decoders either.
 //
 //******************************************************************************************************
 const uint8_t Roco = 0;     // Roco 10764 with Multimouse
