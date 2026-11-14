@@ -6,6 +6,7 @@
 // version:   2021-05-15 V1.0.2 ap initial version
 //            2024-12-11 V1.0.3 ap comments improved for "position" attribute
 //            2025-05-12 V1.1.0 ap/lr binaryStates are now supported (RCN-212: Sections 2.3.5 & 2.3.6)
+//            2026-11-14 V1.1.1 ap outputAddressing attribute added to Accessory (CV29 bit 6)
 //
 // history:   This is a further development of the OpenDecoder 2 software, as developed by W. Kufer.
 //            It has been rewritten such that it can be used for Arduino (Atmel AVR) environments.
@@ -164,6 +165,11 @@ class Dcc {
 // will listen to. If the call includes two parameters, these parameters represent the range of addresses
 // this decoder will listen to.
 //
+// The "outputAddressing" attribute selects how these addresses are interpreted. If false (default),
+// they are decoder addresses (0..511) and are compared with "decoderAddress". If true, they are
+// output addresses (1..2048) and are compared with "outputAddress". The AP_DCC_Decoder_Core library
+// sets this attribute from CV29 bit 6.
+//
 // Broadcast commands for accessory decoders are not implemented. RCN-213 used the 11-bit address
 // 2047 (10111111 1000xxxx) for an emergency stop (Notaus), but deleted that command in its edition
 // of 01.09.2023. This bit pattern is now a normal address: user address 2044. XpressNet V4.0 does
@@ -171,7 +177,7 @@ class Dcc {
 //
 //******************************************************************************************************
 const uint8_t Roco = 0;     // Roco 10764 with Multimouse
-const uint8_t Lenz = 1;     // LENZ LZV100 with Xpressnet V3.6 - Default value
+const uint8_t Lenz = 1;     // LENZ LZV100 with Xpressnet V4.0 - Default value
 const uint8_t OpenDCC = 2;  // OpenDCC Z1 with Xpressnet V3.6
 
 
@@ -181,6 +187,7 @@ class Accessory {
     // Decoder specific attributes should be initialised in setup()
     void setMyAddress(unsigned int first, unsigned int last = 65535);
     uint8_t myMaster = Lenz;
+    bool outputAddressing = false;       // false: decoder addressing / true: output addressing (CV29 bit 6)
 
     // The next attributes inform the main sketch about the contents of the received accessory command
     typedef enum {
