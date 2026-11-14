@@ -189,7 +189,7 @@ class Accessory {
     } Command_t;
     Command_t command;                   // What type of accessory command is received (basic / extended)
 
-    unsigned int decoderAddress;         // 0..511  - Received decoder addres. 511 is the broadcast address
+    unsigned int decoderAddress;         // 0..511  - Received decoder addres.
     unsigned int outputAddress;          // 1..2048 - The address of an individual switch or signal
     uint8_t device;                      // 1..8    - For on/off devices, such as relays
     uint8_t turnout;                     // 1..4    - For switches, which have two states (coils / servo's)
