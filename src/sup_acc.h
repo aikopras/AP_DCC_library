@@ -20,9 +20,6 @@ class AccMessage {
     AccMessage();                     // The constructor, to initialise values
     Dcc::CmdType_t analyse(void);     // The standard method to analyse Accessory Commands
 
-    // Addressing mode
-    bool outputAddressing;            // If true, the decoder uses output (instead of decoder) addressing
-
     // Address range. Initialised by Accessory::setMyAddress(... first, ... last = 65535);
     unsigned int myAccAddrFirst;      // 0..510/1..2048 - First decoder / output address decoder listens to
     unsigned int myAccAddrLast;       // 0..510/1..2048 - Last decoder / output address decoder listens to
@@ -32,7 +29,6 @@ class AccMessage {
 
   private:
     bool IsMyAddress();               // Function to determine if the command is for this decoder
-    bool outputAddressing;            // If true, the decoder uses output (instead of decoder) addressing
     bool railcom;                     // If true, the decoder implements railcom
     unsigned int decoderAddress_old;  // To store the previously received decoder addres
     uint8_t device_old;               // as well as the device
