@@ -9,6 +9,7 @@
 //                                 Tested Extended packets
 //            2025-08-10 V1.0.5 ap Added functions and booleans for CV29 bit 6 (output addressing)
 //                                 and bit 3 (Railcom)
+//            2026-11-14 V1.0.6 ap Broadcast test removed (see AP_DCC_library.h, ADDRESSING DETAILS)
 //
 // This source file is subject of the GNU general public license 3,
 // that is available at the world-wide-web at http://www.gnu.org/licenses/gpl.txt
@@ -160,12 +161,13 @@ AccMessage::AccMessage(){
 
 
 bool AccMessage::IsMyAddress() {
-  const unsigned int broadcast_address = 2047;
-  if (accCmd.decoderAddress == broadcast_address) {return 1;}
-  else {
+  // 2026/11/14: Broadcast commands for accessory decoders are not implemented (see AP_DCC_library.h)
+  // const unsigned int broadcast_address = 2047;
+  // if (accCmd.decoderAddress == broadcast_address) {return 1;}
+  // else {
     if (outputAddressing) {return ((accCmd.decoderAddress >= myAccAddrFirst) && (accCmd.decoderAddress <= myAccAddrLast));}
     else return ((accCmd.decoderAddress >= myAccAddrFirst) && (accCmd.decoderAddress <= myAccAddrLast));
-  }
+  // }
 }
 
 
